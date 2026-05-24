@@ -134,6 +134,7 @@ export function LeadProvider({ children }: { children: ReactNode }) {
         priorSoberLiving: false,
         promptForCall: 'family_request',
         biggestBarrier: 'cost',
+        lastContactTimestamp: null,
         disposition: 'qualified',
         nextActionOwner: null,
         nextActionDue: null,
