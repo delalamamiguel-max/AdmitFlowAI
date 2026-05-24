@@ -1,5 +1,5 @@
 :root {
-  color-scheme: dark light;
+  color-scheme: dark;
 
   /* Tech-Forward Color Tokens - Dark Mode Default */
   --brand-light: #4f46e5; /* Indigo 600 */
@@ -28,13 +28,13 @@
   --border-dark: rgba(255, 255, 255, 0.1);
 
   /* Semantic Tokens */
-  --color-brand: light-dark(var(--brand-light), var(--brand-dark));
-  --color-surface: light-dark(var(--surface-light), var(--surface-dark));
-  --color-surface-card: light-dark(var(--card-light), var(--card-dark));
-  --color-surface-glass: light-dark(var(--glass-light), var(--glass-dark));
-  --color-text: light-dark(var(--text-light), var(--text-dark));
-  --color-text-secondary: light-dark(var(--text-sec-light), var(--text-sec-dark));
-  --color-border: light-dark(var(--border-light), var(--border-dark));
+  --color-brand: var(--brand-dark);
+  --color-surface: var(--surface-dark);
+  --color-surface-card: var(--card-dark);
+  --color-surface-glass: var(--glass-dark);
+  --color-text: var(--text-dark);
+  --color-text-secondary: var(--text-sec-dark);
+  --color-border: var(--border-dark);
   
   --color-sla-fresh: var(--sla-green);
   --color-sla-warning: var(--sla-orange);
@@ -609,3 +609,59 @@ p { text-wrap: pretty; }
   .md\:top-6 { top: 1.5rem; }
   .md\:right-6 { right: 1.5rem; }
 }
+
+/* Missing Layout Utilities */
+.gap-1 { gap: 0.25rem; }
+.gap-sm { gap: 0.25rem; }
+.gap-md { gap: 1rem; }
+.col-span-2 { grid-column: span 2 / span 2; }
+.h-14 { height: 3.5rem; }
+.h-16 { height: 4rem; }
+.w-14 { width: 3.5rem; }
+.w-16 { width: 4rem; }
+.min-h-screen { min-height: 100vh; }
+.bottom-6 { bottom: 1.5rem; }
+.right-6 { right: 1.5rem; }
+.pr-8 { padding-right: 2rem; }
+.uppercase { text-transform: uppercase; }
+.capitalize { text-transform: capitalize; }
+.tracking-wider { letter-spacing: 0.05em; }
+.inline-block { display: inline-block; }
+.rounded { border-radius: 0.25rem; }
+.items-end { align-items: flex-end; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.max-w-\[1600px\] { max-width: 1600px; }
+
+/* Attribute selectors for arbitrary Tailwind classes used in the codebase */
+[class*="text-[var(--color-brand)]"] { color: var(--color-brand); }
+[class*="text-[var(--color-sla-warning)]"] { color: var(--color-sla-warning); }
+[class*="text-[var(--color-sla-breached)]"] { color: var(--color-sla-breached); }
+[class*="text-[var(--color-sla-fresh)]"] { color: var(--color-sla-fresh); }
+
+[class*="bg-[var(--color-brand)]"] { background-color: var(--color-brand); }
+[class*="bg-[var(--color-surface)]"] { background-color: var(--color-surface); }
+[class*="bg-[var(--color-surface)]/90"] { background-color: color-mix(in srgb, var(--color-surface) 90%, transparent); }
+[class*="bg-[var(--color-surface-glass)]"] { background-color: var(--color-surface-glass); }
+[class*="bg-[var(--color-sla-breached)]/10"] { background-color: color-mix(in srgb, var(--color-sla-breached) 10%, transparent); }
+[class*="bg-amber-500/20"] { background-color: rgba(245, 158, 11, 0.2); }
+[class*="bg-red-500/5"] { background-color: rgba(239, 68, 68, 0.05); }
+
+[class*="border-[var(--color-border)]"] { border-color: var(--color-border); }
+[class*="border-[var(--color-brand)]"] { border-color: var(--color-brand); }
+[class*="border-[var(--color-sla-breached)]"] { border-color: var(--color-sla-breached); }
+[class*="border-amber-500/50"] { border-color: rgba(245, 158, 11, 0.5); }
+
+[class*="text-amber-500"] { color: rgba(245, 158, 11, 1); }
+[class*="text-white"] { color: #ffffff; }
+
+@media (min-width: 768px) {
+  .md\:flex-row { flex-direction: row; }
+  .md\:items-center { align-items: center; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.fixed { position: fixed; }
+.z-30 { z-index: 30; }
+.z-40 { z-index: 40; }
