@@ -112,11 +112,7 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
   return (
     <div className="modal-overlay p-0 md:p-4" onClick={onClose}>
       <div className="modal-content glass-panel md:rounded-xl rounded-none w-full h-full md:h-auto p-4 md:p-8" onClick={e => e.stopPropagation()}>
-        <button onClick={onClose} className="btn btn-ghost btn-sm absolute top-4 right-4 z-10 md:top-6 md:right-6">
-          <X size={20} />
-        </button>
-
-        <div className="flex justify-between items-start mb-6 pr-8">
+        <div className="flex justify-between items-start mb-6">
           <div>
             <h2 className="font-bold text-2xl">{lead.leadId}</h2>
             <div className="text-xl font-medium mt-1">{decryptedName}</div>
@@ -127,9 +123,14 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
               </div>
             )}
           </div>
-          <div className="flex flex-col items-end gap-sm">
-            <span className="badge" style={{ background: 'var(--color-brand)' }}>{lead.status.replace(/_/g, ' ')}</span>
-            <SLATimer deadline={lead.slaDeadline} />
+          <div className="flex gap-4 items-start">
+            <div className="flex flex-col items-end gap-sm">
+              <span className="badge text-white" style={{ background: 'var(--color-brand)' }}>{lead.status.replace(/_/g, ' ').toUpperCase()}</span>
+              <SLATimer deadline={lead.slaDeadline} />
+            </div>
+            <button onClick={onClose} className="btn btn-ghost btn-sm p-1 shrink-0">
+              <X size={20} />
+            </button>
           </div>
         </div>
 

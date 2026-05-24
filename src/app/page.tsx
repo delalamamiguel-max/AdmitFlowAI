@@ -37,7 +37,7 @@ export default function LandingPage() {
       </section>
 
       {/* 5. Product Preview Section (Visual Hook) */}
-      <section className="container" style={{ marginTop: '-4rem', position: 'relative', zIndex: 10 }}>
+      <section className="container" style={{ marginTop: '4rem', position: 'relative', zIndex: 10 }}>
         <div className="preview-box">
           <div className="preview-inner">
             <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

@@ -20,7 +20,7 @@ export function LockScreen() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!passphrase.trim()) {
-      setError('Passphrase is required');
+      setError('Password is required');
       return;
     }
 
@@ -51,7 +51,7 @@ export function LockScreen() {
           <h1 className="font-bold text-3xl mb-2" style={{ background: 'var(--color-brand)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             AdmitFlowAI
           </h1>
-          <p className="text-muted">Enter your center passphrase to unlock the pipeline</p>
+          <p className="text-muted">Enter your center password to unlock the pipeline</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-md text-left">
@@ -59,7 +59,7 @@ export function LockScreen() {
             <input 
               type="password" 
               className="input" 
-              placeholder="Passphrase..." 
+              placeholder="Password..." 
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
               autoFocus
