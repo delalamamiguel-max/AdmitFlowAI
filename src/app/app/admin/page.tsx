@@ -27,8 +27,8 @@ export default function AdminCommandCenter() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link href="/app" className="glass-panel p-8 flex flex-col items-center justify-center gap-4 hover:shadow-lg transition-all text-center group cursor-pointer" style={{ textDecoration: 'none' }}>
-          <div className="w-16 h-16 rounded-full bg-[var(--color-brand)] bg-opacity-10 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Users size={32} className="text-[var(--color-brand)]" />
+          <div className="w-16 h-16 rounded-full bg-[var(--color-brand)] flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+            <Users size={32} className="text-white" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-[var(--color-text)]">Intake</h2>
@@ -37,8 +37,8 @@ export default function AdminCommandCenter() {
         </Link>
 
         <Link href="/app/reports" className="glass-panel p-8 flex flex-col items-center justify-center gap-4 hover:shadow-lg transition-all text-center group cursor-pointer" style={{ textDecoration: 'none' }}>
-          <div className="w-16 h-16 rounded-full bg-[var(--color-brand)] bg-opacity-10 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <BarChart2 size={32} className="text-[var(--color-brand)]" />
+          <div className="w-16 h-16 rounded-full bg-[var(--color-brand)] flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+            <BarChart2 size={32} className="text-white" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-[var(--color-text)]">Team Reports</h2>
@@ -47,8 +47,8 @@ export default function AdminCommandCenter() {
         </Link>
 
         <Link href="/app/admin/settings" className="glass-panel p-8 flex flex-col items-center justify-center gap-4 hover:shadow-lg transition-all text-center group cursor-pointer" style={{ textDecoration: 'none' }}>
-          <div className="w-16 h-16 rounded-full bg-[var(--color-brand)] bg-opacity-10 flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Settings size={32} className="text-[var(--color-brand)]" />
+          <div className="w-16 h-16 rounded-full bg-[var(--color-brand)] flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+            <Settings size={32} className="text-white" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-[var(--color-text)]">Admin Settings</h2>
