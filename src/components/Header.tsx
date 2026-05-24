@@ -47,13 +47,13 @@ export function Header() {
       
       <nav className="hidden md:flex items-center text-sm font-medium" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
         {currentUser?.role !== 'SUPER_ADMIN' && (
-          <>
-            <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Pipeline</Link>
-            <Link href="/app/reports" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Reports</Link>
-          </>
+          <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Pipeline</Link>
         )}
         {currentUser?.role === 'ADMIN' && (
-          <Link href="/app/admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Admin Dashboard</Link>
+          <>
+            <Link href="/app/reports" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Team Reports</Link>
+            <Link href="/app/admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Admin Settings</Link>
+          </>
         )}
         {currentUser?.role === 'SUPER_ADMIN' && (
           <Link href="/app/super-admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Super Admin</Link>
