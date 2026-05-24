@@ -69,9 +69,23 @@ export default function SuperAdminDashboard() {
 
 
   const totalMRR = accounts.reduce((acc, curr) => acc + curr.mrr, 0);
+
+  const getMultiplier = (tf: string) => {
+    switch(tf) {
+      case 'weekly': return 12 / 52;
+      case 'bi-weekly': return 12 / 26;
+      case 'monthly': return 1;
+      case 'quarterly': return 3;
+      case 'yearly': return 12;
+      default: return 1;
+    }
+  };
+
   const activeAccounts = accounts.filter(a => a.status === 'active').length;
   const activeClientsList = accounts.filter(a => a.status !== 'archived');
   const archivedClientsList = accounts.filter(a => a.status === 'archived');
+
+  const adjustedTotalRevenue = totalMRR * getMultiplier(timeframe);
 
   return (
     <main className="flex-1 p-6 md:p-8 max-w-[1200px] mx-auto w-full">
@@ -109,7 +123,7 @@ export default function SuperAdminDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="glass-panel p-6 flex flex-col gap-2">
           <DollarSign size={28} className="text-[var(--color-brand)]" />
-          <span className="text-4xl font-bold">${totalMRR.toLocaleString()}</span>
+          <span className="text-4xl font-bold">${Math.round(adjustedTotalRevenue).toLocaleString()}</span>
           <span className="text-sm font-medium uppercase tracking-wider text-muted">Platform Revenue ({timeframe})</span>
         </div>
         <div className="glass-panel p-6 flex flex-col gap-2">
@@ -153,7 +167,7 @@ export default function SuperAdminDashboard() {
                     </span>
                   </td>
                   <td className="py-4" style={{ textAlign: 'left' }}>{acc.users}</td>
-                  <td className="py-4" style={{ textAlign: 'left' }}>${acc.mrr.toLocaleString()}</td>
+                  <td className="py-4" style={{ textAlign: 'left' }}>${Math.round(acc.mrr * getMultiplier(timeframe)).toLocaleString()}</td>
                   <td className="py-4 text-right flex justify-end gap-2" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', alignItems: 'center' }}>
                     <button className="btn btn-ghost btn-sm" onClick={() => setManagingClient(acc)}>Manage</button>
                     {acc.status === 'active' ? (
@@ -196,7 +210,7 @@ export default function SuperAdminDashboard() {
                       </span>
                     </td>
                     <td className="py-4" style={{ textAlign: 'left' }}>{acc.users}</td>
-                    <td className="py-4" style={{ textAlign: 'left' }}>${acc.mrr.toLocaleString()}</td>
+                    <td className="py-4" style={{ textAlign: 'left' }}>${Math.round(acc.mrr * getMultiplier(timeframe)).toLocaleString()}</td>
                     <td className="py-4 text-right flex justify-end gap-2" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', alignItems: 'center' }}>
                       <button className="btn btn-ghost btn-sm text-[var(--color-sla-fresh)]" onClick={() => handleToggleStatus(acc.id, 'active')}>Restore</button>
                     </td>
