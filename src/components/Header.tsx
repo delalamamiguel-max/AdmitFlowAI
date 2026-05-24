@@ -21,12 +21,10 @@ export function Header() {
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
           setNotificationsEnabled(true);
-          alert('Notifications enabled!');
         }
       });
     } else {
       setNotificationsEnabled(false);
-      alert('Notifications disabled.');
     }
   };
 
@@ -62,9 +60,29 @@ export function Header() {
         )}
       </nav>
 
-      <div className="flex items-center gap-sm">
-        <button className="btn btn-ghost btn-sm" onClick={toggleNotifications} title={notificationsEnabled ? "Disable Notifications" : "Enable Notifications"}>
-          {notificationsEnabled ? <Bell size={18} className="text-[var(--color-brand)]" /> : <BellOff size={18} />}
+      <div className="flex items-center gap-sm" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        {currentUser?.role === 'SUPER_ADMIN' && (
+          <a href="/" target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--color-border)', fontSize: '0.875rem', textDecoration: 'none', color: 'var(--color-text)' }}>
+            View Landing Page
+          </a>
+        )}
+        <button 
+          className="btn btn-sm" 
+          onClick={toggleNotifications} 
+          title={notificationsEnabled ? "Disable Notifications" : "Enable Notifications"}
+          style={{ 
+            display: 'flex', alignItems: 'center', gap: '0.5rem', 
+            backgroundColor: notificationsEnabled ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
+            color: notificationsEnabled ? '#22c55e' : '#ef4444', 
+            border: `1px solid ${notificationsEnabled ? '#22c55e' : '#ef4444'}`,
+            borderRadius: '20px', padding: '0.25rem 0.75rem'
+          }}
+        >
+          {notificationsEnabled ? (
+            <><Bell size={14} /> <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>ON</span></>
+          ) : (
+            <><BellOff size={14} /> <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>OFF</span></>
+          )}
         </button>
         <button className="btn btn-ghost btn-sm" onClick={handleSignOut} title="Sign Out">
           <LogOut size={18} />
