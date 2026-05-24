@@ -110,9 +110,9 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content glass-panel" onClick={e => e.stopPropagation()}>
-        <button onClick={onClose} className="btn btn-ghost btn-sm" style={{ position: 'absolute', top: '1.5rem', right: '1.5rem' }}>
+    <div className="modal-overlay p-0 md:p-4" onClick={onClose}>
+      <div className="modal-content glass-panel md:rounded-xl rounded-none w-full h-full md:h-auto p-4 md:p-8" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="btn btn-ghost btn-sm absolute top-4 right-4 z-10 md:top-6 md:right-6">
           <X size={20} />
         </button>
 
@@ -158,7 +158,7 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
             <label className="text-sm font-medium text-muted mb-1 block">Next Action Owner</label>
             <input 

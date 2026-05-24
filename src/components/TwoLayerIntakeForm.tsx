@@ -145,34 +145,35 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
   const isUrgent = urgency === 'immediate' || immediateSafetyConcern;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content glass-panel max-w-2xl w-full" onClick={e => e.stopPropagation()}>
-        <button onClick={onClose} className="btn btn-ghost btn-sm absolute top-4 right-4 z-10">
+    <div className="modal-overlay p-0 md:p-4" onClick={onClose}>
+      <div className="modal-content glass-panel max-w-3xl w-full h-full md:h-auto flex flex-col md:rounded-xl rounded-none p-0 md:p-8" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="btn btn-ghost btn-sm absolute top-4 right-4 z-10 md:top-6 md:right-6">
           <X size={18} />
         </button>
         
-        <h2 className="font-bold text-2xl mb-2">New Inquiry Intake</h2>
-        
-        {/* Stepper Progress */}
-        <div className="flex gap-2 mb-6">
-          <div className={`flex-1 h-2 rounded-full ${step >= 1 ? 'bg-[var(--color-brand)]' : 'bg-[var(--color-border)]'}`}></div>
-          <div className={`flex-1 h-2 rounded-full ${step >= 2 ? 'bg-[var(--color-brand)]' : 'bg-[var(--color-border)]'}`}></div>
-        </div>
-
-        {isUrgent && (
-          <div className="p-4 bg-[var(--color-sla-breached)]/20 border border-[var(--color-sla-breached)] rounded-md mb-6 text-sm">
-            <strong>CRITICAL:</strong> For immediate danger or crisis, call 911 or 988. For treatment referral support, contact SAMHSA at 1-800-662-HELP.
+        <div className="flex-1 overflow-y-auto p-4 md:p-0">
+          <h2 className="font-bold text-2xl mb-2">New Inquiry Intake</h2>
+          
+          {/* Stepper Progress */}
+          <div className="flex gap-2 mb-6">
+            <div className={`flex-1 h-2 rounded-full ${step >= 1 ? 'bg-[var(--color-brand)]' : 'bg-[var(--color-border)]'}`}></div>
+            <div className={`flex-1 h-2 rounded-full ${step >= 2 ? 'bg-[var(--color-brand)]' : 'bg-[var(--color-border)]'}`}></div>
           </div>
-        )}
 
-        <form onSubmit={handleSave} className="flex flex-col gap-6">
+          {isUrgent && (
+            <div className="p-4 bg-[var(--color-sla-breached)]/10 border border-[var(--color-sla-breached)] rounded-md mb-6 text-sm text-[var(--color-sla-breached)]">
+              <strong>CRITICAL:</strong> For immediate danger or crisis, call 911 or 988. For treatment referral support, contact SAMHSA at 1-800-662-HELP.
+            </div>
+          )}
+
+          <form id="intake-form" onSubmit={handleSave} className="flex flex-col gap-6">
           
           {/* LAYER 1: First Contact */}
           {step === 1 && (
             <div className="animate-fade-in flex flex-col gap-6">
               <h3 className="font-semibold text-lg border-b border-[var(--color-border)] pb-2">Layer 1: Fast First-Contact</h3>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Client Name *</label>
                   <input required type="text" className="input" value={clientName} onChange={e => setClientName(e.target.value)} />
@@ -183,7 +184,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Urgency Level</label>
                   <select className="select" value={urgency} onChange={e => setUrgency(e.target.value as UrgencyLevel)}>
@@ -200,7 +201,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Channel</label>
                   <select className="select" value={channel} onChange={e => setChannel(e.target.value as IntakeChannel)}>
@@ -225,7 +226,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 p-4 bg-[var(--color-surface-glass)] rounded-md border border-[var(--color-border)]">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-[var(--color-surface-glass)] rounded-md border border-[var(--color-border)]">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Assigned Rep</label>
                   <input type="text" className="input" placeholder="e.g. rep123" value={repId} onChange={e => setRepId(e.target.value)} />
@@ -244,14 +245,6 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 mt-4">
-                <button type="submit" className="btn btn-ghost" disabled={loading}>
-                  Save & Exit (MVP)
-                </button>
-                <button type="button" className="btn btn-primary" onClick={() => setStep(2)}>
-                  Continue to Fit & Details
-                </button>
-              </div>
             </div>
           )}
 
@@ -261,7 +254,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               <h3 className="font-semibold text-lg border-b border-[var(--color-border)] pb-2">Layer 2: Fit & Follow-Up</h3>
               
               {/* Caller Logic */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Who is calling?</label>
                   <select className="select" value={callerRole} onChange={e => setCallerRole(e.target.value as CallerRole)}>
@@ -288,7 +281,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               </div>
 
               {callerRole !== 'self' && callerRole !== '' && (
-                <div className="grid grid-cols-2 gap-4 bg-[var(--color-surface-glass)] p-4 rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[var(--color-surface-glass)] p-4 rounded-md border border-[var(--color-border)]">
                   <div>
                     <label className="text-sm font-medium mb-1 block">Callback Name</label>
                     <input type="text" className="input" value={callbackName} onChange={e => setCallbackName(e.target.value)} />
@@ -301,7 +294,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               )}
 
               {/* Service Interest Logic */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Service Interest</label>
                   <select className="select" value={serviceInterest} onChange={e => setServiceInterest(e.target.value as ServiceInterest)}>
@@ -316,7 +309,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               </div>
 
               {serviceInterest === 'sober_living' && (
-                <div className="grid grid-cols-2 gap-4 p-4 border border-[var(--color-brand)] rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-[var(--color-brand)] rounded-md bg-[var(--color-surface-glass)]">
                   <div>
                     <label className="text-sm font-medium mb-1 block">Transportation Concern?</label>
                     <div className="flex gap-4">
@@ -328,7 +321,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               )}
 
               {/* Financial / Insurance Logic */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">Payment Path</label>
                   <select className="select" value={paymentPath} onChange={e => setPaymentPath(e.target.value as PaymentPath)}>
@@ -342,7 +335,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               </div>
 
               {paymentPath === 'commercial_insurance' && (
-                <div className="grid grid-cols-2 gap-4 p-4 border border-[var(--color-brand)] rounded-md">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border border-[var(--color-brand)] rounded-md bg-[var(--color-surface-glass)]">
                   <div className="col-span-2">
                     <label className="text-sm font-medium mb-1 block">Insurance Carrier (Do NOT enter member ID)</label>
                     <input type="text" className="input" value={insuranceCarrier} onChange={e => setInsuranceCarrier(e.target.value)} />
@@ -374,18 +367,33 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
                 {phiWarning && <p className="text-xs text-[var(--color-sla-breached)] mt-1">{phiWarning}</p>}
               </div>
 
-              <div className="flex justify-between mt-4">
-                <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>
-                  Back
-                </button>
-                <button type="submit" className="btn btn-primary" disabled={loading}>
-                  {loading ? 'Encrypting & Saving...' : 'Complete Intake'}
-                </button>
-              </div>
             </div>
           )}
-
         </form>
+        </div>
+
+        {/* Sticky Action Bar */}
+        <div className="sticky bottom-0 left-0 right-0 bg-[var(--color-surface)]/90 backdrop-blur-md p-4 border-t border-[var(--color-border)] mt-auto flex justify-between items-center md:rounded-b-xl z-20 shadow-lg">
+          {step === 1 ? (
+            <>
+              <button form="intake-form" type="submit" className="btn btn-ghost" disabled={loading}>
+                Save & Exit
+              </button>
+              <button type="button" className="btn btn-primary" onClick={() => setStep(2)}>
+                Continue to Fit & Details
+              </button>
+            </>
+          ) : (
+            <>
+              <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>
+                Back
+              </button>
+              <button form="intake-form" type="submit" className="btn btn-primary" disabled={loading}>
+                {loading ? 'Encrypting & Saving...' : 'Complete Intake'}
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
