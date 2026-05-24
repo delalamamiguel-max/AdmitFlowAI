@@ -15,7 +15,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <nav className="nav-links">
-            <Link href="/app">Log In</Link>
+            <Link href="/app" onClick={() => { if (typeof window !== 'undefined') localStorage.removeItem('admitflow_leads'); }}>Log In</Link>
             <Link href="/app" className="btn btn-primary btn-sm">Start Intake</Link>
           </nav>
         </div>

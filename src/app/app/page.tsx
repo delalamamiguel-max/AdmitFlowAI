@@ -253,7 +253,7 @@ function DashboardContent() {
               {filter ? `Showing ${filter} leads (${timeframe})` : 'Track new inquiries, route urgent leads, and keep every follow-up moving.'}
             </p>
           </div>
-          <div className="flex items-center gap-2 glass-panel p-1 rounded-lg">
+          {leads.length > 0 && (<div className="flex items-center gap-2 glass-panel p-1 rounded-lg">
             <button 
               className={`btn btn-sm ${viewMode === 'worklist' ? 'bg-[var(--color-surface)] shadow text-[var(--color-text)] border-none' : 'btn-ghost border-transparent'}`}
               onClick={() => setViewMode('worklist')}
@@ -266,7 +266,7 @@ function DashboardContent() {
             >
               <Columns size={16} /> Pipeline
             </button>
-          </div>
+          </div>)}
         </div>
 
         {filteredLeads.length === 0 ? (
