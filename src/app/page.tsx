@@ -1,9 +1,41 @@
 'use client';
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShieldAlert, CheckCircle2, PhoneCall, LayoutDashboard, Clock, ShieldCheck, X } from 'lucide-react';
+import { ArrowRight, ShieldAlert, CheckCircle2, PhoneCall, LayoutDashboard, Clock, ShieldCheck, X, TrendingUp, Users, Zap, Target, DollarSign, Minus, Plus } from 'lucide-react';
 
 export default function LandingPage() {
+  // ROI Calculator state
+  const [monthlyLeads, setMonthlyLeads] = useState(150);
+  const [currentRate, setCurrentRate] = useState(20);
+  const [improvedRate, setImprovedRate] = useState(22);
+  const [revenuePerAdmit, setRevenuePerAdmit] = useState(15000);
+  const softwareCost = 750;
+
+  const calcResults = useMemo(() => {
+    const currentAdmits = monthlyLeads * (currentRate / 100);
+    const projectedAdmits = monthlyLeads * (improvedRate / 100);
+    const incrementalAdmits = projectedAdmits - currentAdmits;
+    const incrementalMonthlyRevenue = incrementalAdmits * revenuePerAdmit;
+    const annualizedRevenue = incrementalMonthlyRevenue * 12;
+    const monthlyROI = softwareCost > 0 ? ((incrementalMonthlyRevenue - softwareCost) / softwareCost) : 0;
+    const paybackAdmits = revenuePerAdmit > 0 ? softwareCost / revenuePerAdmit : 0;
+    return {
+      currentAdmits: Math.round(currentAdmits * 10) / 10,
+      projectedAdmits: Math.round(projectedAdmits * 10) / 10,
+      incrementalAdmits: Math.round(incrementalAdmits * 10) / 10,
+      incrementalMonthlyRevenue: Math.round(incrementalMonthlyRevenue),
+      annualizedRevenue: Math.round(annualizedRevenue),
+      monthlyROI: Math.round(monthlyROI * 100) / 100,
+      paybackAdmits: Math.round(paybackAdmits * 100) / 100,
+    };
+  }, [monthlyLeads, currentRate, improvedRate, revenuePerAdmit]);
+
+  // Pricing state
+  const [locations, setLocations] = useState(1);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const pricePerLocation = billingCycle === 'yearly' ? 675 : 750;
+  const totalPrice = pricePerLocation * locations;
+
   return (
     <div>
       {/* Navbar */}
@@ -15,6 +47,9 @@ export default function LandingPage() {
             </Link>
           </div>
           <nav className="nav-links">
+            <a href="#why">Why</a>
+            <a href="#calculator">ROI</a>
+            <a href="#pricing">Pricing</a>
             <Link href="/app" onClick={() => { if (typeof window !== 'undefined') localStorage.removeItem('admitflow_leads'); }}>Log In</Link>
             <Link href="/app" className="btn btn-primary btn-sm">Start Intake</Link>
           </nav>
@@ -23,24 +58,25 @@ export default function LandingPage() {
 
       {/* 1. Hero Section */}
       <section className="section section-dark hero">
+        <p className="hero-eyebrow">ADMISSIONS PIPELINE FOR BEHAVIORAL HEALTH</p>
         <h1 className="hero-title">
           Admissions follow-up, <span>without the chaos.</span>
         </h1>
         <p className="hero-subtitle">
-          AdmitFlowAI helps treatment and sober-living teams capture inquiries, route urgent leads, assign owners, and schedule next steps without turning intake into a clinical chart.
+          AdmitFlowAI helps treatment and sober-living teams capture inquiries, route urgent leads, assign owners, and schedule next steps — without turning intake into a clinical chart.
         </p>
         <div className="hero-actions">
           <Link href="/app" className="btn btn-primary">
             Start Intake <ArrowRight size={20} />
           </Link>
-          <a href="#workflow" className="btn btn-ghost">
-            View Demo Workflow
+          <a href="#why" className="btn btn-ghost">
+            See the Business Case
           </a>
         </div>
       </section>
 
-      {/* 5. Product Preview Section (Visual Hook) */}
-      <section className="container" style={{ marginTop: '4rem', position: 'relative', zIndex: 10 }}>
+      {/* 2. Product Preview Section */}
+      <section className="container" style={{ marginTop: '2rem', marginBottom: '-2rem', position: 'relative', zIndex: 10 }}>
         <div className="preview-box">
           <div className="preview-inner">
             <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--color-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -52,9 +88,7 @@ export default function LandingPage() {
                 <span className="badge badge-danger">1 Urgent</span>
               </div>
             </div>
-            
             <div style={{ padding: '2rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', background: 'var(--color-surface-card)' }}>
-              
               <div className="lead-card" data-sla="breached" style={{ background: 'var(--color-surface)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <span style={{ fontWeight: 'bold' }}>AF-99214</span>
@@ -63,7 +97,6 @@ export default function LandingPage() {
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Caller: Parent</div>
                 <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold' }}>Next: Urgent Assessment</div>
               </div>
-
               <div className="lead-card" data-sla="warning" style={{ background: 'var(--color-surface)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <span style={{ fontWeight: 'bold' }}>AF-88123</span>
@@ -72,7 +105,6 @@ export default function LandingPage() {
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Sober Living Inquiry</div>
                 <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold' }}>Next: Verification Call</div>
               </div>
-
               <div className="lead-card" data-sla="fresh" style={{ background: 'var(--color-surface)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <span style={{ fontWeight: 'bold' }}>AF-77492</span>
@@ -81,14 +113,13 @@ export default function LandingPage() {
                 <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Web Form</div>
                 <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', fontWeight: 'bold' }}>Next: Assign Owner</div>
               </div>
-
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Problem Section */}
-      <section className="section section-dark">
+      {/* 3. Problem Section */}
+      <section className="section section-dark" style={{ paddingTop: '5rem' }}>
         <div className="container">
           <div className="section-header">
             <h2>Admissions shouldn&apos;t feel this hard.</h2>
@@ -99,7 +130,7 @@ export default function LandingPage() {
                 <PhoneCall size={24} />
               </div>
               <h3>Lost in the Noise</h3>
-              <p>Inquiries come from too many channels—calls, web forms, referral partners. Finding out who called who is impossible.</p>
+              <p>Inquiries come from too many channels — calls, web forms, referral partners. Finding out who called who is impossible.</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon" style={{ color: 'var(--color-sla-warning)', borderColor: 'var(--color-sla-warning)' }}>
@@ -119,7 +150,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 3. Solution Section */}
+      {/* 4. Solution Section */}
       <section className="section">
         <div className="container grid-2">
           <div>
@@ -137,7 +168,7 @@ export default function LandingPage() {
                 'Keep notes operational, low-PHI, and compliant'
               ].map((item, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <CheckCircle2 style={{ color: 'var(--color-brand)' }} size={24} />
+                  <CheckCircle2 style={{ color: 'var(--color-brand)', flexShrink: 0 }} size={24} />
                   <span style={{ fontSize: '1.125rem', fontWeight: 500 }}>{item}</span>
                 </div>
               ))}
@@ -151,7 +182,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 4. Workflow Section */}
+      {/* 5. Workflow Section */}
       <section id="workflow" className="section section-dark">
         <div className="container">
           <div className="section-header">
@@ -165,7 +196,6 @@ export default function LandingPage() {
                 <p>Quickly capture the caller, their relationship, and the program interest using our fast, progressive intake form.</p>
               </div>
             </div>
-            
             <div className="step-item">
               <div className="step-number">2</div>
               <div className="step-content">
@@ -173,7 +203,6 @@ export default function LandingPage() {
                 <p>Flag immediate safety concerns, verify payment paths, and route the lead to the correct admissions representative.</p>
               </div>
             </div>
-            
             <div className="step-item">
               <div className="step-number">3</div>
               <div className="step-content">
@@ -185,16 +214,287 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 6. Trust / Compliance Boundary Section */}
+      {/* 6. Why AdmitFlow OS — Value Proposition Section */}
+      <section id="why" className="section">
+        <div className="container">
+          <div className="section-header">
+            <p className="section-eyebrow">THE COST OF MISSED ADMITS</p>
+            <h2>Every dropped lead is $15,000 walking out the door.</h2>
+            <p>Most centers convert only 15–25% of inquiries into admits. Tighter follow-up and accountability close the gap — without adding headcount.</p>
+          </div>
+
+          <div className="value-grid">
+            <div className="value-card">
+              <div className="value-icon">
+                <Zap size={28} />
+              </div>
+              <h3>Faster Response = More Admits</h3>
+              <p>Speed to first contact is the single strongest predictor of conversion. AdmitFlow enforces SLA timers so no inquiry sits unanswered.</p>
+              <div className="value-stat">Centers that respond within 15 min convert 3× more leads.</div>
+            </div>
+
+            <div className="value-card">
+              <div className="value-icon">
+                <Target size={28} />
+              </div>
+              <h3>Follow-Up That Actually Happens</h3>
+              <p>Every lead gets a concrete next action, an owner, and a due date. No more &quot;I thought someone else was handling that.&quot;</p>
+              <div className="value-stat">Most lost admits aren&apos;t a bad fit — they&apos;re a missed callback.</div>
+            </div>
+
+            <div className="value-card">
+              <div className="value-icon">
+                <Users size={28} />
+              </div>
+              <h3>Accountability Without Micromanaging</h3>
+              <p>Admissions directors see exactly which reps are on track, which leads are breaching SLA, and where the pipeline is stuck.</p>
+              <div className="value-stat">Real-time visibility without standing over anyone&apos;s shoulder.</div>
+            </div>
+
+            <div className="value-card">
+              <div className="value-icon">
+                <TrendingUp size={28} />
+              </div>
+              <h3>No Added Headcount Needed</h3>
+              <p>Better process, not more people. One admissions rep with AdmitFlow handles the volume that used to require two.</p>
+              <div className="value-stat">Save $40K+/yr versus hiring another admissions coordinator.</div>
+            </div>
+
+            <div className="value-card">
+              <div className="value-icon">
+                <ShieldCheck size={28} />
+              </div>
+              <h3>Built for Admissions, Not Clinical</h3>
+              <p>No diagnosis codes, no therapy notes, no insurance ID storage. AdmitFlow stays in the admissions lane so your team stays compliant.</p>
+              <div className="value-stat">Operational intake data only — no HIPAA-heavy clinical fields.</div>
+            </div>
+          </div>
+
+          <div className="roi-proof-block">
+            <DollarSign size={32} />
+            <div>
+              <p className="roi-proof-headline">At $750/month, recovering one extra admit per quarter delivers 5× ROI.</p>
+              <p className="roi-proof-sub">One recovered admit per month? That&apos;s a 19× return. The math isn&apos;t complicated — it&apos;s just expensive to ignore.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. ROI Calculator Section */}
+      <section id="calculator" className="section section-dark">
+        <div className="container">
+          <div className="section-header">
+            <p className="section-eyebrow">ROI CALCULATOR</p>
+            <h2>Run the numbers with your data.</h2>
+            <p>Use your own assumptions. See what even a small improvement in conversion means for your bottom line.</p>
+          </div>
+
+          <div className="calculator-wrapper">
+            <div className="calc-inputs">
+              <h3>Your Numbers</h3>
+              <p className="calc-helper">Adjust the sliders — the results update instantly.</p>
+
+              <div className="calc-field">
+                <div className="calc-field-header">
+                  <label>Monthly Leads</label>
+                  <span className="calc-field-value">{monthlyLeads}</span>
+                </div>
+                <input type="range" min="20" max="500" step="10" value={monthlyLeads} onChange={(e) => setMonthlyLeads(Number(e.target.value))} className="calc-slider" />
+                <div className="calc-range-labels"><span>20</span><span>500</span></div>
+              </div>
+
+              <div className="calc-field">
+                <div className="calc-field-header">
+                  <label>Current Conversion Rate</label>
+                  <span className="calc-field-value">{currentRate}%</span>
+                </div>
+                <input type="range" min="5" max="40" step="1" value={currentRate} onChange={(e) => setCurrentRate(Number(e.target.value))} className="calc-slider" />
+                <div className="calc-range-labels"><span>5%</span><span>40%</span></div>
+              </div>
+
+              <div className="calc-field">
+                <div className="calc-field-header">
+                  <label>Improved Conversion Rate</label>
+                  <span className="calc-field-value">{improvedRate}%</span>
+                </div>
+                <input type="range" min={currentRate} max="50" step="1" value={improvedRate} onChange={(e) => setImprovedRate(Number(e.target.value))} className="calc-slider" />
+                <div className="calc-range-labels"><span>{currentRate}%</span><span>50%</span></div>
+              </div>
+
+              <div className="calc-field">
+                <div className="calc-field-header">
+                  <label>Revenue Per Admit</label>
+                  <span className="calc-field-value">${revenuePerAdmit.toLocaleString()}</span>
+                </div>
+                <input type="range" min="5000" max="50000" step="1000" value={revenuePerAdmit} onChange={(e) => setRevenuePerAdmit(Number(e.target.value))} className="calc-slider" />
+                <div className="calc-range-labels"><span>$5K</span><span>$50K</span></div>
+              </div>
+
+              <div className="calc-software-cost">
+                <span>Software Cost</span>
+                <span className="calc-field-value">${softwareCost}/mo</span>
+              </div>
+            </div>
+
+            <div className="calc-results">
+              <h3>Your Projected Impact</h3>
+
+              <div className="calc-result-grid">
+                <div className="calc-result-item">
+                  <span className="calc-result-label">Current Admits/Mo</span>
+                  <span className="calc-result-number">{calcResults.currentAdmits}</span>
+                </div>
+                <div className="calc-result-item">
+                  <span className="calc-result-label">Projected Admits/Mo</span>
+                  <span className="calc-result-number calc-result-highlight">{calcResults.projectedAdmits}</span>
+                </div>
+                <div className="calc-result-item">
+                  <span className="calc-result-label">Incremental Admits</span>
+                  <span className="calc-result-number">+{calcResults.incrementalAdmits}</span>
+                </div>
+                <div className="calc-result-item">
+                  <span className="calc-result-label">Payback Threshold</span>
+                  <span className="calc-result-number">{calcResults.paybackAdmits} admits</span>
+                </div>
+              </div>
+
+              <div className="calc-result-hero">
+                <div className="calc-result-hero-item">
+                  <span className="calc-result-label">Incremental Monthly Revenue</span>
+                  <span className="calc-result-big">${calcResults.incrementalMonthlyRevenue.toLocaleString()}</span>
+                </div>
+                <div className="calc-result-hero-item">
+                  <span className="calc-result-label">Annualized Revenue Impact</span>
+                  <span className="calc-result-big">${calcResults.annualizedRevenue.toLocaleString()}</span>
+                </div>
+                <div className="calc-result-hero-item calc-roi-box">
+                  <span className="calc-result-label">Monthly ROI</span>
+                  <span className="calc-result-roi">{calcResults.monthlyROI > 0 ? `${Math.round(calcResults.monthlyROI * 100)}%` : '—'}</span>
+                </div>
+              </div>
+
+              <p className="calc-interpretation">
+                {calcResults.incrementalAdmits > 0
+                  ? `With a ${improvedRate - currentRate} percentage-point improvement in conversion, your team would recover ~${calcResults.incrementalAdmits} additional admits per month — worth $${calcResults.incrementalMonthlyRevenue.toLocaleString()} in monthly revenue against a $${softwareCost} software cost.`
+                  : 'Increase the improved conversion rate above your current rate to see projected results.'}
+              </p>
+
+              <p className="calc-disclaimer">
+                * Estimates are illustrative and based on your inputs. Actual results depend on market conditions, team execution, and lead quality.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Pricing Section */}
+      <section id="pricing" className="section">
+        <div className="container">
+          <div className="section-header">
+            <p className="section-eyebrow">SIMPLE PRICING</p>
+            <h2>Less than the cost of one lost admit.</h2>
+            <p>One plan. Everything included. No per-seat fees.</p>
+          </div>
+
+          <div className="pricing-card-wrapper">
+            <div className="pricing-card glass-panel">
+              {/* Billing Toggle */}
+              <div className="pricing-toggle-wrapper">
+                <button
+                  className={`pricing-toggle-btn ${billingCycle === 'monthly' ? 'active' : ''}`}
+                  onClick={() => setBillingCycle('monthly')}
+                >
+                  Monthly
+                </button>
+                <button
+                  className={`pricing-toggle-btn ${billingCycle === 'yearly' ? 'active' : ''}`}
+                  onClick={() => setBillingCycle('yearly')}
+                >
+                  Yearly
+                  <span className="pricing-discount-badge">-10%</span>
+                </button>
+              </div>
+
+              {/* Price Display */}
+              <div className="pricing-header">
+                <div className="pricing-plan-name">AdmitFlow OS</div>
+                <div className="pricing-amount">
+                  <span className="pricing-dollar">$</span>
+                  <span className="pricing-number">{totalPrice.toLocaleString()}</span>
+                  <span className="pricing-period">/mo</span>
+                </div>
+              </div>
+
+              <div className="pricing-free-trial">
+                <strong>Includes 14-Day Free Trial</strong>
+                <span>Full access, cancel anytime</span>
+              </div>
+
+              <p className="pricing-description">
+                Everything you need to run admissions intake at {locations > 1 ? `${locations} locations` : '1 location'}.
+              </p>
+
+              {/* Location Slider */}
+              <div className="pricing-slider-box">
+                <div className="pricing-slider-header">
+                  <span>Locations</span>
+                  <span className="pricing-slider-value">{locations}</span>
+                </div>
+                <div className="pricing-slider-controls">
+                  <button className="pricing-slider-btn" onClick={() => setLocations(Math.max(1, locations - 1))}>
+                    <Minus size={16} />
+                  </button>
+                  <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    value={locations}
+                    onChange={(e) => setLocations(Number(e.target.value))}
+                    className="calc-slider"
+                  />
+                  <button className="pricing-slider-btn" onClick={() => setLocations(Math.min(10, locations + 1))}>
+                    <Plus size={16} />
+                  </button>
+                </div>
+                <div className="pricing-per-loc">${pricePerLocation}/location/mo</div>
+              </div>
+
+              {/* Feature List */}
+              <ul className="pricing-features">
+                {[
+                  'Unlimited Intakes',
+                  'SLA Timers & Breach Alerts',
+                  'Team Reports & Analytics',
+                  'Client-Side Encryption',
+                  'Admin Settings & User Roles',
+                  'Daily Admissions Reporting',
+                ].map((f, i) => (
+                  <li key={i}>
+                    <CheckCircle2 size={20} style={{ color: 'var(--color-sla-fresh)', flexShrink: 0 }} />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Link href="/app" className="btn btn-primary pricing-cta">
+                Start 14-Day Free Trial
+              </Link>
+
+              <p className="pricing-footnote">No credit card required to start.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Trust / Compliance Section */}
       <section className="section section-glass">
         <div className="container">
-          <div className="glass-panel" style={{ padding: '4rem', position: 'relative', overflow: 'hidden' }}>
+          <div className="glass-panel" style={{ padding: '3rem', position: 'relative', overflow: 'hidden' }}>
             <ShieldCheck size={300} style={{ position: 'absolute', top: '-50px', right: '-50px', color: 'var(--color-brand)', opacity: 0.1, transform: 'rotate(15deg)' }} />
             <h2 style={{ fontSize: 'clamp(2rem, 3vw, 2.5rem)', fontWeight: 800, marginBottom: '1rem', position: 'relative', zIndex: 10 }}>Built to keep intake operational, not clinical.</h2>
-            <p style={{ fontSize: '1.25rem', color: 'var(--color-text-secondary)', marginBottom: '3rem', maxWidth: '800px', position: 'relative', zIndex: 10 }}>
+            <p style={{ fontSize: '1.25rem', color: 'var(--color-text-secondary)', marginBottom: '2.5rem', maxWidth: '800px', position: 'relative', zIndex: 10 }}>
               We actively prevent your admissions workflow from becoming a HIPAA liability. AdmitFlowAI uses client-side encryption for contact info and strictly bans the collection of heavy clinical data in the intake process.
             </p>
-            
             <div className="grid-2" style={{ gap: '2rem', alignItems: 'start' }}>
               <div style={{ background: 'var(--color-surface-card)', padding: '2rem', borderRadius: '1rem', border: '1px solid var(--color-border)' }}>
                 <h4 style={{ fontWeight: 'bold', fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--color-sla-fresh)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -225,11 +525,11 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 7. CTA Section */}
+      {/* 10. CTA Section */}
       <section className="cta-section">
         <div className="container">
-          <h2>Give every inquiry a clear next step.</h2>
-          <p>Stop losing admissions to messy spreadsheets and disorganized CRM boards.</p>
+          <h2>Stop losing admits to missed follow-ups.</h2>
+          <p>One recovered admit pays for AdmitFlow OS for 20 months. Start proving it today.</p>
           <Link href="/app" className="btn btn-primary">
             Start Your First Intake
           </Link>
