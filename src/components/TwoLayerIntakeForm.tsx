@@ -53,7 +53,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const handleSave = async (e?: React.FormEvent) => {
+  const handleSave = async (e?: React.FormEvent, isDraft: boolean = false) => {
     if (e) e.preventDefault();
     if (!clientName) {
       alert("Client Name is required.");
@@ -89,7 +89,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
         leadId: newLeadId,
         createdAt: now,
         updatedAt: now,
-        status: stage,
+        status: isDraft ? 'draft' : stage,
         channel,
         source,
         assignedRepId: repId,
@@ -172,7 +172,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
             </div>
           )}
 
-          <form id="intake-form" onSubmit={handleSave} className="flex flex-col gap-6">
+          <form id="intake-form" onSubmit={(e) => handleSave(e, false)} className="flex flex-col gap-6">
           
           {/* LAYER 1: First Contact */}
           {step === 1 && (
@@ -382,7 +382,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
         <div className="sticky bottom-0 left-0 right-0 bg-[var(--color-surface)]/90 backdrop-blur-md p-4 border-t border-[var(--color-border)] mt-auto flex justify-between items-center md:rounded-b-xl z-20 shadow-lg">
           {step === 1 ? (
             <>
-              <button type="button" onClick={handleSave} className="btn btn-ghost" disabled={loading}>
+              <button type="button" onClick={(e) => handleSave(e, true)} className="btn btn-ghost" disabled={loading}>
                 Save & Exit
               </button>
               <button type="button" className="btn btn-primary" onClick={() => setStep(2)}>
@@ -394,7 +394,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>
                 Back
               </button>
-              <button type="button" onClick={handleSave} className="btn btn-primary" disabled={loading}>
+              <button type="button" onClick={(e) => handleSave(e, false)} className="btn btn-primary" disabled={loading}>
                 {loading ? 'Encrypting & Saving...' : 'Complete Intake'}
               </button>
             </>

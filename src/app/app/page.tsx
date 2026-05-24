@@ -12,6 +12,7 @@ import { TwoLayerIntakeForm } from '@/components/TwoLayerIntakeForm';
 import { Plus, BarChart2, LayoutList, Columns, AlertTriangle, Clock, Activity, Inbox } from 'lucide-react';
 
 const COLUMNS = [
+  { id: 'draft', title: 'Drafts', color: 'var(--color-text)' },
   { id: 'new', title: 'New', color: 'var(--color-sla-fresh)' },
   { id: 'contacted', title: 'Contacted', color: 'var(--color-brand)' },
   { id: 'qualifying', title: 'Qualifying', color: 'var(--color-brand)' },
@@ -295,15 +296,7 @@ function DashboardContent() {
       </main>
 
       {leads.length > 0 && (<div className="fixed bottom-6 right-6 flex gap-sm z-40">
-        <div className="tooltip-container">
-          <Link 
-            href="/app/reports"
-            className="btn btn-primary shadow-lg rounded-full h-14 w-14 p-0 flex items-center justify-center" 
-          >
-            <BarChart2 size={24} />
-          </Link>
-          <span className="tooltip-text">Daily Report</span>
-        </div>
+
         <div className="tooltip-container">
           <button 
             className="btn btn-primary shadow-lg rounded-full h-14 w-14 p-0 flex items-center justify-center" 

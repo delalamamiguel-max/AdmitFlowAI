@@ -1,4 +1,4 @@
-export type LeadStatus = 'new' | 'contacted' | 'qualifying' | 'pending_verification' | 'tour_scheduled' | 'assessment_scheduled' | 'follow_up' | 'admitted' | 'lost';
+export type LeadStatus = 'draft' | 'new' | 'contacted' | 'qualifying' | 'pending_verification' | 'tour_scheduled' | 'assessment_scheduled' | 'follow_up' | 'admitted' | 'lost';
 export type SLAStatus = 'fresh' | 'warning' | 'breached';
 
 export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'REP';

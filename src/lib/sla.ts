@@ -1,6 +1,7 @@
 import { LeadStatus, SLAStatus } from './types';
 
 export const SLA_CONFIGS: Record<LeadStatus, number> = {
+  draft: 1440,
   new: 15,
   contacted: 1440,
   qualifying: 1440,
