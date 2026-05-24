@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLeads } from '@/lib/store';
 import { LeadStatus } from '@/lib/types';
@@ -25,7 +25,7 @@ const COLUMNS = [
 
 type ViewMode = 'worklist' | 'pipeline';
 
-export default function Dashboard() {
+function DashboardContent() {
   const { leads, moveLead } = useLeads();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -312,5 +312,13 @@ export default function Dashboard() {
 
 
     </div>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div className="flex-1 flex items-center justify-center p-8">Loading dashboard...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }
