@@ -9,6 +9,7 @@ export interface User {
   role: UserRole;
   locationId?: string;
   name: string;
+  status?: 'active' | 'disabled';
 }
 
 

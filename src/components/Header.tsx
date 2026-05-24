@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLeads } from '@/lib/store';
-import { LogOut, Bell, BellOff } from 'lucide-react';
+import { LogOut, Bell, BellOff, LayoutDashboard, Inbox, BarChart2, Settings } from 'lucide-react';
 import Link from 'next/link';
 
 export function Header() {
@@ -36,23 +36,40 @@ export function Header() {
     }
   };
 
+  const getRoleSubtitle = () => {
+    if (currentUser?.role === 'ADMIN') return 'Admin';
+    if (currentUser?.role === 'SUPER_ADMIN') return 'Super Admin';
+    return 'Admissions Intake';
+  };
+
   return (
     <header className="glass-panel flex justify-between items-center" style={{ height: '64px', padding: '0 1.5rem', borderRadius: 0, borderTop: 'none', borderLeft: 'none', borderRight: 'none', position: 'sticky', top: 0, zIndex: 40 }}>
       <div className="flex items-center gap-md">
-        <h1 className="font-bold" style={{ margin: 0, fontSize: '1.25rem', background: 'var(--color-brand)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          AdmitFlowAI
-        </h1>
-        <span className="text-muted text-sm hidden sm:inline">Admissions Intake</span>
+        <a href="/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+          <h1 className="font-bold" style={{ margin: 0, fontSize: '1.25rem', background: 'var(--color-brand)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            AdmitFlowAI
+          </h1>
+        </a>
+        <span className="text-muted text-sm hidden sm:inline">{getRoleSubtitle()}</span>
       </div>
       
       <nav className="hidden md:flex items-center text-sm font-medium" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
         {currentUser?.role !== 'SUPER_ADMIN' && (
-          <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Intake</Link>
+          <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <Inbox size={16} /> Intake
+          </Link>
         )}
         {currentUser?.role === 'ADMIN' && (
           <>
-            <Link href="/app/reports" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Team Reports</Link>
-            <Link href="/app/admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Admin Settings</Link>
+            <Link href="/app/admin" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <LayoutDashboard size={16} /> Dashboard
+            </Link>
+            <Link href="/app/reports" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <BarChart2 size={16} /> Team Reports
+            </Link>
+            <Link href="/app/admin/settings" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Settings size={16} /> Admin Settings
+            </Link>
           </>
         )}
         {currentUser?.role === 'SUPER_ADMIN' && (
@@ -66,6 +83,13 @@ export function Header() {
             View Landing Page
           </a>
         )}
+        
+        {currentUser && (
+          <span className="text-sm font-medium hidden sm:inline-block mr-2 text-[var(--color-text)]">
+            {currentUser.name}
+          </span>
+        )}
+
         <button 
           className="btn btn-sm" 
           onClick={toggleNotifications} 
