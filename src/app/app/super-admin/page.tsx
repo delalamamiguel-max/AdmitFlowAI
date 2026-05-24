@@ -14,7 +14,7 @@ export default function SuperAdminDashboard() {
       <main className="flex-1 p-6 flex flex-col items-center justify-center text-center">
         <h1 className="text-3xl font-bold mb-4 text-[var(--color-sla-breached)]">Unauthorized</h1>
         <p className="text-muted mb-8">You must be a Super Admin to view this page.</p>
-        <Link href="/app" className="btn btn-primary">Return to Pipeline</Link>
+        <Link href="/app" className="btn btn-primary">Return to Intake</Link>
       </main>
     );
   }

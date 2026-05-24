@@ -139,7 +139,7 @@ function DashboardContent() {
       <div className="glass-panel p-4 flex flex-col gap-2">
         <div className="flex items-center gap-2 text-[var(--color-sla-fresh)]">
           <Activity size={20} />
-          <span className="font-semibold text-sm uppercase tracking-wider">Active Pipeline</span>
+          <span className="font-semibold text-sm uppercase tracking-wider">Active Intake</span>
         </div>
         <span className="text-3xl font-bold">{activeLeads.length}</span>
         <span className="text-sm text-muted">Total active leads</span>
@@ -279,7 +279,7 @@ function DashboardContent() {
               className={`btn btn-sm ${viewMode === 'pipeline' ? 'bg-[var(--color-surface)] shadow text-[var(--color-text)] border-none' : 'btn-ghost border-transparent'}`}
               onClick={() => setViewMode('pipeline')}
             >
-              <Columns size={16} /> Pipeline
+              <Columns size={16} /> Intake
             </button>
           </div>)}
         </div>

@@ -132,7 +132,7 @@ export default function LandingPage() {
                 'Capture inquiries quickly without massive forms',
                 'Route leads visually by urgency level',
                 'Assign explicit ownership to reps',
-                'Track exact pipeline stages instantly',
+                'Track exact intake stages instantly',
                 'Schedule the very next follow-up action',
                 'Keep notes operational, low-PHI, and compliant'
               ].map((item, i) => (
@@ -178,7 +178,7 @@ export default function LandingPage() {
               <div className="step-number">3</div>
               <div className="step-content">
                 <h3>Set Next Action</h3>
-                <p>Never leave a lead hanging. Assign a concrete next step and due date to keep the pipeline moving forward.</p>
+                <p>Never leave a lead hanging. Assign a concrete next step and due date to keep the intake moving forward.</p>
               </div>
             </div>
           </div>
@@ -192,7 +192,7 @@ export default function LandingPage() {
             <ShieldCheck size={300} style={{ position: 'absolute', top: '-50px', right: '-50px', color: 'var(--color-brand)', opacity: 0.1, transform: 'rotate(15deg)' }} />
             <h2 style={{ fontSize: 'clamp(2rem, 3vw, 2.5rem)', fontWeight: 800, marginBottom: '1rem', position: 'relative', zIndex: 10 }}>Built to keep intake operational, not clinical.</h2>
             <p style={{ fontSize: '1.25rem', color: 'var(--color-text-secondary)', marginBottom: '3rem', maxWidth: '800px', position: 'relative', zIndex: 10 }}>
-              We actively prevent your admissions workflow from becoming a HIPAA liability. AdmitFlowAI uses client-side encryption for contact info and strictly bans the collection of heavy clinical data in the pipeline.
+              We actively prevent your admissions workflow from becoming a HIPAA liability. AdmitFlowAI uses client-side encryption for contact info and strictly bans the collection of heavy clinical data in the intake process.
             </p>
             
             <div className="grid-2" style={{ gap: '2rem', alignItems: 'start' }}>

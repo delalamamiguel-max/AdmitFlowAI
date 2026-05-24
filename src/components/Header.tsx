@@ -42,12 +42,12 @@ export function Header() {
         <h1 className="font-bold" style={{ margin: 0, fontSize: '1.25rem', background: 'var(--color-brand)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           AdmitFlowAI
         </h1>
-        <span className="text-muted text-sm hidden sm:inline">Admissions Pipeline</span>
+        <span className="text-muted text-sm hidden sm:inline">Admissions Intake</span>
       </div>
       
       <nav className="hidden md:flex items-center text-sm font-medium" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
         {currentUser?.role !== 'SUPER_ADMIN' && (
-          <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Pipeline</Link>
+          <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Intake</Link>
         )}
         {currentUser?.role === 'ADMIN' && (
           <>
