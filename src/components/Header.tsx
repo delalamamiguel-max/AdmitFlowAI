@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useLeads } from '@/lib/store';
-import { Lock, Bell } from 'lucide-react';
+import { Lock, Bell, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
 export function Header() {
@@ -18,6 +18,13 @@ export function Header() {
     }
   };
 
+  const handleSignOut = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('admitflow_leads');
+      window.location.href = '/';
+    }
+  };
+
   return (
     <header className="glass-panel flex justify-between items-center" style={{ height: '64px', padding: '0 1.5rem', borderRadius: 0, borderTop: 'none', borderLeft: 'none', borderRight: 'none', position: 'sticky', top: 0, zIndex: 40 }}>
       <div className="flex items-center gap-md">
@@ -27,14 +34,14 @@ export function Header() {
         <span className="text-muted text-sm hidden sm:inline">Admissions Pipeline</span>
       </div>
       
-      <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-        <Link href="/app" className="hover:text-[var(--color-brand)] transition-colors">Pipeline</Link>
-        <Link href="/app/reports" className="hover:text-[var(--color-brand)] transition-colors">Reports</Link>
+      <nav className="hidden md:flex items-center text-sm font-medium" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+        <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Pipeline</Link>
+        <Link href="/app/reports" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Reports</Link>
         {currentUser?.role === 'ADMIN' && (
-          <Link href="/app/admin" className="hover:text-[var(--color-brand)] transition-colors">Admin Dashboard</Link>
+          <Link href="/app/admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Admin Dashboard</Link>
         )}
         {currentUser?.role === 'SUPER_ADMIN' && (
-          <Link href="/app/super-admin" className="hover:text-[var(--color-brand)] transition-colors">Super Admin</Link>
+          <Link href="/app/super-admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Super Admin</Link>
         )}
       </nav>
 
@@ -44,6 +51,9 @@ export function Header() {
         </button>
         <button className="btn btn-ghost btn-sm" onClick={lock} title="Lock Application">
           <Lock size={18} />
+        </button>
+        <button className="btn btn-ghost btn-sm" onClick={handleSignOut} title="Sign Out">
+          <LogOut size={18} />
         </button>
       </div>
     </header>
