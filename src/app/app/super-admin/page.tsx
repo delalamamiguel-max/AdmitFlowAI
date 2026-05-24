@@ -20,12 +20,32 @@ export default function SuperAdminDashboard() {
   }
 
   // Mock accounts and revenue
-  const accounts = [
+  const [accounts, setAccounts] = useState([
     { id: '1', name: 'Serenity Rehab Center', status: 'active', users: 12, mrr: 2400 },
     { id: '2', name: 'Oceanside Sober Living', status: 'active', users: 5, mrr: 1000 },
     { id: '3', name: 'Mountain View Detox', status: 'paused', users: 8, mrr: 0 },
     { id: '4', name: 'City Recovery', status: 'active', users: 3, mrr: 600 },
-  ];
+  ]);
+
+  const handleAddLocation = () => {
+    const name = window.prompt("Enter new location name:");
+    if (name) {
+      setAccounts([...accounts, { id: Date.now().toString(), name, status: 'active', users: 1, mrr: 0 }]);
+    }
+  };
+
+  const handleToggleStatus = (id: string) => {
+    setAccounts(accounts.map(acc => {
+      if (acc.id === id) {
+        return { ...acc, status: acc.status === 'active' ? 'paused' : 'active' };
+      }
+      return acc;
+    }));
+  };
+
+  const handleManage = (name: string) => {
+    alert(`Managing settings for ${name}...`);
+  };
 
   const totalMRR = accounts.reduce((acc, curr) => acc + curr.mrr, 0);
   const activeAccounts = accounts.filter(a => a.status === 'active').length;
@@ -73,38 +93,38 @@ export default function SuperAdminDashboard() {
       </div>
 
       <div className="glass-panel p-6">
-        <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-4 mb-4">
+        <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-4 mb-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 className="text-xl font-bold">Locations & Clients</h2>
-          <button className="btn btn-primary btn-sm">Add Location</button>
+          <button className="btn btn-primary btn-sm" onClick={handleAddLocation}>Add Location</button>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full border-collapse" style={{ width: '100%', textAlign: 'left' }}>
             <thead>
               <tr className="border-b border-[var(--color-border)] text-muted text-sm">
-                <th className="pb-3 font-medium">Location Name</th>
-                <th className="pb-3 font-medium">Status</th>
-                <th className="pb-3 font-medium">Users</th>
-                <th className="pb-3 font-medium">Revenue</th>
-                <th className="pb-3 font-medium text-right">Actions</th>
+                <th className="pb-3 font-medium" style={{ textAlign: 'left', paddingRight: '1rem' }}>Location Name</th>
+                <th className="pb-3 font-medium" style={{ textAlign: 'left', paddingRight: '1rem' }}>Status</th>
+                <th className="pb-3 font-medium" style={{ textAlign: 'left', paddingRight: '1rem' }}>Users</th>
+                <th className="pb-3 font-medium" style={{ textAlign: 'left', paddingRight: '1rem' }}>Revenue</th>
+                <th className="pb-3 font-medium text-right" style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {accounts.map(acc => (
                 <tr key={acc.id} className="border-b border-[var(--color-border)] hover:bg-[var(--color-surface)] transition-colors">
-                  <td className="py-4 font-medium">{acc.name}</td>
-                  <td className="py-4">
+                  <td className="py-4 font-medium" style={{ textAlign: 'left' }}>{acc.name}</td>
+                  <td className="py-4" style={{ textAlign: 'left' }}>
                     <span className={`px-2 py-1 text-xs rounded-full ${acc.status === 'active' ? 'bg-[var(--color-sla-fresh)]/10 text-[var(--color-sla-fresh)]' : 'bg-[var(--color-sla-warning)]/10 text-[var(--color-sla-warning)]'}`}>
                       {acc.status.toUpperCase()}
                     </span>
                   </td>
-                  <td className="py-4">{acc.users}</td>
-                  <td className="py-4">${acc.mrr.toLocaleString()}</td>
-                  <td className="py-4 text-right flex justify-end gap-2">
-                    <button className="btn btn-ghost btn-sm">Manage</button>
+                  <td className="py-4" style={{ textAlign: 'left' }}>{acc.users}</td>
+                  <td className="py-4" style={{ textAlign: 'left' }}>${acc.mrr.toLocaleString()}</td>
+                  <td className="py-4 text-right flex justify-end gap-2" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', alignItems: 'center' }}>
+                    <button className="btn btn-ghost btn-sm" onClick={() => handleManage(acc.name)}>Manage</button>
                     {acc.status === 'active' ? (
-                      <button className="btn btn-ghost btn-sm text-[var(--color-sla-warning)]">Pause</button>
+                      <button className="btn btn-ghost btn-sm text-[var(--color-sla-warning)]" onClick={() => handleToggleStatus(acc.id)}>Pause</button>
                     ) : (
-                      <button className="btn btn-ghost btn-sm text-[var(--color-sla-fresh)]">Activate</button>
+                      <button className="btn btn-ghost btn-sm text-[var(--color-sla-fresh)]" onClick={() => handleToggleStatus(acc.id)}>Activate</button>
                     )}
                   </td>
                 </tr>

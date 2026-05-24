@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, Suspense } from 'react';
+import React, { useState, useMemo, Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLeads } from '@/lib/store';
 import { LeadStatus } from '@/lib/types';
@@ -26,7 +26,7 @@ const COLUMNS = [
 type ViewMode = 'worklist' | 'pipeline';
 
 function DashboardContent() {
-  const { leads, moveLead } = useLeads();
+  const { leads, moveLead, currentUser } = useLeads();
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -60,6 +60,17 @@ function DashboardContent() {
 
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [showNewLeadForm, setShowNewLeadForm] = useState(false);
+
+  useEffect(() => {
+    if (currentUser?.role === 'SUPER_ADMIN') {
+      router.push('/app/super-admin');
+    }
+  }, [currentUser, router]);
+
+  if (currentUser?.role === 'SUPER_ADMIN') {
+    return <div style={{ padding: '2rem', textAlign: 'center' }}>Redirecting to Super Admin Dashboard...</div>;
+  }
+
   const [viewMode, setViewMode] = useState<ViewMode>('worklist');
 
   // Drag and Drop handlers for Kanban
@@ -137,15 +148,19 @@ function DashboardContent() {
   );
 
   const renderEmptyState = () => (
-    <div className="flex flex-col items-center justify-center py-20 text-center glass-panel mt-6">
-      <div className="w-16 h-16 bg-[var(--color-brand)] text-white rounded-full flex items-center justify-center mb-6">
+    <div className="glass-panel" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '4rem 1.5rem', textAlign: 'center', margin: '2rem auto', maxWidth: '600px' }}>
+      <button 
+        onClick={() => setShowNewLeadForm(true)}
+        style={{ width: '4rem', height: '4rem', background: 'var(--color-brand)', color: 'var(--color-surface)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+        title="New Intake"
+      >
         <Plus size={32} />
-      </div>
-      <h2 className="text-2xl font-bold mb-2">Start your first intake</h2>
-      <p className="text-muted max-w-md mb-8">
+      </button>
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Start your first intake</h2>
+      <p style={{ color: 'var(--color-text-sec)', maxWidth: '28rem', marginBottom: '2rem', lineHeight: '1.5' }}>
         Capture the caller, program interest, urgency, and next action in under two minutes. Give every inquiry a clear next step.
       </p>
-      <button className="btn btn-primary btn-lg" onClick={() => setShowNewLeadForm(true)}>
+      <button className="btn btn-primary btn-lg" onClick={() => setShowNewLeadForm(true)} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <Plus size={20} /> New Intake
       </button>
     </div>
