@@ -1,12 +1,15 @@
 import { LeadStatus, SLAStatus, SLAConfig } from './types';
 
 export const SLA_CONFIGS: Record<LeadStatus, number> = {
-  inquiry_received: 15,
-  intake_in_progress: 1440,
-  vob_pending: 240,
-  scheduled_for_admit: 1440,
+  new: 15,
+  contacted: 1440,
+  qualifying: 1440,
+  pending_verification: 240,
+  tour_scheduled: 1440,
+  assessment_scheduled: 1440,
+  follow_up: 1440,
   admitted: 1440,
-  closed_lost: 1440,
+  lost: 1440,
 };
 
 export function calculateSLADeadline(status: LeadStatus, createdAt: string): string {

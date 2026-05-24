@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Lead, CallDisposition, LeadTask } from '@/lib/types';
+import { Lead, CallOutcome, LeadTask } from '@/lib/types';
 import { useLeads } from '@/lib/store';
 import { decryptData } from '@/lib/crypto';
 import { SLATimer } from './SLATimer';
@@ -14,6 +14,9 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
   
   const [decryptedName, setDecryptedName] = useState('Loading...');
   const [decryptedPhone, setDecryptedPhone] = useState('');
+  const [decryptedCallbackName, setDecryptedCallbackName] = useState('');
+  const [decryptedCallbackPhone, setDecryptedCallbackPhone] = useState('');
+  
   const [notes, setNotes] = useState('');
   const [phiWarning, setPhiWarning] = useState('');
   const [newTaskTodo, setNewTaskTodo] = useState('');
@@ -34,6 +37,8 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
         if (isMounted) {
           setDecryptedName(data.clientName);
           setDecryptedPhone(data.phoneNumber);
+          setDecryptedCallbackName(data.callbackName || '');
+          setDecryptedCallbackPhone(data.callbackNumber || '');
         }
       } catch (e) {
         if (isMounted) setDecryptedName('[Decryption Error]');
@@ -67,7 +72,7 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
 
   const handleDispositionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     updateLead(lead.leadId, { 
-      disposition: (e.target.value || null) as CallDisposition | null,
+      disposition: (e.target.value || null) as CallOutcome | null,
       lastContactTimestamp: new Date().toISOString()
     });
   };
@@ -116,6 +121,11 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
             <h2 className="font-bold text-2xl">{lead.leadId}</h2>
             <div className="text-xl font-medium mt-1">{decryptedName}</div>
             <div className="text-muted text-sm">{decryptedPhone}</div>
+            {decryptedCallbackName && (
+              <div className="mt-2 text-sm">
+                <strong>Callback:</strong> {decryptedCallbackName} {decryptedCallbackPhone && `(${decryptedCallbackPhone})`}
+              </div>
+            )}
           </div>
           <div className="flex flex-col items-end gap-sm">
             <span className="badge" style={{ background: 'var(--color-brand)' }}>{lead.status.replace(/_/g, ' ')}</span>
@@ -123,29 +133,55 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-6 p-4 bg-[var(--color-surface-glass)] border border-[var(--color-border)] rounded-md">
           <div>
-            <label className="text-sm font-medium text-muted mb-1 block">Call Disposition</label>
+            <label className="text-sm font-medium text-muted mb-1 block">Call Outcome</label>
             <select className="select" value={lead.disposition || ''} onChange={handleDispositionChange}>
-              <option value="">-- No Disposition --</option>
-              <option value="spoke_to_lead">Spoke to Lead</option>
-              <option value="spoke_to_family">Spoke to Family Member</option>
-              <option value="no_answer_voicemail">No Answer - Left Voicemail</option>
-              <option value="busy_callback">Busy / Call Back Scheduled</option>
-              <option value="not_a_fit">Not a Fit (Disqualified)</option>
-              <option value="needs_higher_care">Needs Higher Level of Care</option>
+              <option value="">-- No Outcome --</option>
+              <option value="no_answer">No Answer</option>
+              <option value="left_voicemail">Left Voicemail</option>
+              <option value="wrong_number">Wrong Number</option>
+              <option value="information_only">Information Only</option>
+              <option value="qualified">Qualified</option>
+              <option value="warm_transfer">Warm Transfer</option>
+              <option value="tour_scheduled">Tour Scheduled</option>
+              <option value="assessment_scheduled">Assessment Scheduled</option>
+              <option value="admitted_elsewhere">Admitted Elsewhere</option>
+              <option value="not_a_fit">Not a Fit</option>
             </select>
           </div>
           <div>
             <label className="text-sm font-medium text-muted mb-1 block">Lead Source</label>
-            <div className="input bg-transparent border-transparent px-0 font-medium">
+            <div className="input bg-transparent border-transparent px-0 font-medium capitalize">
               {lead.source.replace(/_/g, ' ')}
             </div>
           </div>
         </div>
 
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div>
+            <label className="text-sm font-medium text-muted mb-1 block">Next Action Owner</label>
+            <input 
+              type="text" 
+              className="input" 
+              value={lead.nextActionOwner || ''} 
+              onChange={e => updateLead(lead.leadId, { nextActionOwner: e.target.value })} 
+              placeholder="e.g. rep123" 
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-muted mb-1 block">Next Action Due</label>
+            <input 
+              type="datetime-local" 
+              className="input" 
+              value={lead.nextActionDue || ''} 
+              onChange={e => updateLead(lead.leadId, { nextActionDue: e.target.value })} 
+            />
+          </div>
+        </div>
+
         <div className="mb-6">
-          <label className="text-sm font-medium text-muted mb-2 block">Tasks</label>
+          <label className="text-sm font-medium text-muted mb-2 block">Tasks (Legacy)</label>
           <div className="flex flex-col gap-2 mb-3">
             {lead.tasks.map(task => (
               <div key={task.taskId} className="flex items-center gap-sm">
@@ -168,12 +204,12 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
 
         <div className="mb-6">
           <label className="text-sm font-medium text-muted mb-1 block">Logistical Notes</label>
-          <div className="phi-warning">
-            <AlertTriangle size={16} />
+          <div className="phi-warning p-2 bg-amber-500/20 border border-amber-500/50 rounded-md flex gap-2 text-sm text-amber-500 mb-2">
+            <AlertTriangle size={16} className="shrink-0" />
             <span>{PHI_WARNING_MESSAGE}</span>
           </div>
           <textarea 
-            className="textarea" 
+            className="textarea h-24" 
             value={notes} 
             onChange={e => setNotes(e.target.value)}
             onBlur={handleNotesBlur}

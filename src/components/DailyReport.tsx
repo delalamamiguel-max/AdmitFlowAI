@@ -12,10 +12,10 @@ export function DailyReport({ onClose }: { onClose: () => void }) {
   
   const createdToday = leads.filter(l => new Date(l.createdAt) >= today);
   const admittedToday = createdToday.filter(l => l.status === 'admitted');
-  const lostToday = createdToday.filter(l => l.status === 'closed_lost');
+  const lostToday = createdToday.filter(l => l.status === 'lost');
   
   const breachedCount = leads.filter(l => l.slaStatus === 'breached').length;
-  const totalActive = leads.filter(l => l.status !== 'admitted' && l.status !== 'closed_lost').length;
+  const totalActive = leads.filter(l => l.status !== 'admitted' && l.status !== 'lost').length;
   const breachPercent = totalActive > 0 ? Math.round((breachedCount / totalActive) * 100) : 0;
   
   const sourceCount: Record<string, number> = {};
