@@ -279,7 +279,7 @@ function DashboardContent() {
         )}
       </main>
 
-      <div className="fixed bottom-6 right-6 flex gap-sm z-40">
+      {leads.length > 0 && (<div className="fixed bottom-6 right-6 flex gap-sm z-40">
         <div className="tooltip-container">
           <Link 
             href="/app/reports"
@@ -298,7 +298,7 @@ function DashboardContent() {
           </button>
           <span className="tooltip-text">New Intake</span>
         </div>
-      </div>
+      </div>)}
 
       {selectedLeadId && (
         <LeadModal 

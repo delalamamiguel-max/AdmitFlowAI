@@ -1,3 +1,4 @@
+'use client';
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, ShieldAlert, CheckCircle2, PhoneCall, LayoutDashboard, Clock, ShieldCheck, X } from 'lucide-react';

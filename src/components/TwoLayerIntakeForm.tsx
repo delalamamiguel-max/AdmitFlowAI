@@ -53,9 +53,17 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!clientName || !cryptoKey) return;
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!clientName) {
+      alert("Client Name is required.");
+      setStep(1);
+      return;
+    }
+    if (!cryptoKey) {
+      alert("System locked. Please refresh to enter your password.");
+      return;
+    }
     
     const check = containsPHI(logisticalNotes);
     if (check.hasPHI) {
@@ -141,8 +149,9 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
   const isUrgent = urgency === 'immediate' || immediateSafetyConcern;
 
   return (
-    <div className="modal-overlay p-0 md:p-4">
-      <div className="modal-content glass-panel max-w-3xl w-full h-full md:h-auto flex flex-col md:rounded-xl rounded-none p-0 md:p-8" onClick={e => e.stopPropagation()}>
+    <div className="modal-overlay p-0 md:p-4" style={{ backdropFilter: "blur(8px)", backgroundColor: "rgba(0,0,0,0.3)" }}>
+      <div className="modal-content glass-panel max-w-3xl w-full h-full md:h-auto flex flex-col md:rounded-xl rounded-none p-0 md:p-8 relative overflow-hidden" onClick={e => e.stopPropagation()}>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-brand opacity-10 rounded-full blur-3xl pointer-events-none -mr-32 -mt-32"></div>
         <div className="flex-1 overflow-y-auto p-4 md:p-0">
           <div className="flex justify-between items-start mb-2">
             <h2 className="font-bold text-2xl">New Inquiry Intake</h2>
@@ -373,7 +382,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
         <div className="sticky bottom-0 left-0 right-0 bg-[var(--color-surface)]/90 backdrop-blur-md p-4 border-t border-[var(--color-border)] mt-auto flex justify-between items-center md:rounded-b-xl z-20 shadow-lg">
           {step === 1 ? (
             <>
-              <button form="intake-form" type="submit" className="btn btn-ghost" disabled={loading}>
+              <button type="button" onClick={handleSave} className="btn btn-ghost" disabled={loading}>
                 Save & Exit
               </button>
               <button type="button" className="btn btn-primary" onClick={() => setStep(2)}>
@@ -385,7 +394,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
               <button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>
                 Back
               </button>
-              <button form="intake-form" type="submit" className="btn btn-primary" disabled={loading}>
+              <button type="button" onClick={handleSave} className="btn btn-primary" disabled={loading}>
                 {loading ? 'Encrypting & Saving...' : 'Complete Intake'}
               </button>
             </>
