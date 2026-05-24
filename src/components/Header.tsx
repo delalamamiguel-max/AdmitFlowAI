@@ -3,9 +3,10 @@
 import React from 'react';
 import { useLeads } from '@/lib/store';
 import { Lock, Bell } from 'lucide-react';
+import Link from 'next/link';
 
 export function Header() {
-  const { lock } = useLeads();
+  const { lock, currentUser } = useLeads();
 
   const handleNotificationRequest = () => {
     if ('Notification' in window) {
@@ -26,6 +27,17 @@ export function Header() {
         <span className="text-muted text-sm hidden sm:inline">Admissions Pipeline</span>
       </div>
       
+      <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+        <Link href="/app" className="hover:text-[var(--color-brand)] transition-colors">Pipeline</Link>
+        <Link href="/app/reports" className="hover:text-[var(--color-brand)] transition-colors">Reports</Link>
+        {currentUser?.role === 'ADMIN' && (
+          <Link href="/app/admin" className="hover:text-[var(--color-brand)] transition-colors">Admin Dashboard</Link>
+        )}
+        {currentUser?.role === 'SUPER_ADMIN' && (
+          <Link href="/app/super-admin" className="hover:text-[var(--color-brand)] transition-colors">Super Admin</Link>
+        )}
+      </nav>
+
       <div className="flex items-center gap-sm">
         <button className="btn btn-ghost btn-sm" onClick={handleNotificationRequest} title="Enable Notifications">
           <Bell size={18} />

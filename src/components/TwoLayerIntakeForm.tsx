@@ -145,7 +145,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
   const isUrgent = urgency === 'immediate' || immediateSafetyConcern;
 
   return (
-    <div className="modal-overlay p-0 md:p-4" onClick={onClose}>
+    <div className="modal-overlay p-0 md:p-4">
       <div className="modal-content glass-panel max-w-3xl w-full h-full md:h-auto flex flex-col md:rounded-xl rounded-none p-0 md:p-8" onClick={e => e.stopPropagation()}>
         <div className="flex-1 overflow-y-auto p-4 md:p-0">
           <div className="flex justify-between items-start mb-2">

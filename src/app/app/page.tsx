@@ -1,14 +1,15 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useLeads } from '@/lib/store';
 import { LeadStatus, Lead } from '@/lib/types';
+import Link from 'next/link';
 import { Header } from '@/components/Header';
-import { LockScreen } from '@/components/LockScreen';
 import { LeadCard } from '@/components/LeadCard';
 import { LeadModal } from '@/components/LeadModal';
 import { TwoLayerIntakeForm } from '@/components/TwoLayerIntakeForm';
-import { DailyReport } from '@/components/DailyReport';
+
 import { Plus, BarChart2, LayoutList, Columns, AlertTriangle, Clock, Activity, Inbox } from 'lucide-react';
 
 const COLUMNS = [
@@ -26,10 +27,40 @@ const COLUMNS = [
 type ViewMode = 'worklist' | 'pipeline';
 
 export default function Dashboard() {
-  const { isUnlocked, leads, moveLead } = useLeads();
+  const { leads, moveLead } = useLeads();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
+  const filter = searchParams?.get('filter');
+  const timeframe = searchParams?.get('timeframe');
+
+  // Filter leads based on query params
+  const filteredLeads = useMemo(() => {
+    let result = [...leads];
+    
+    if (filter && timeframe) {
+      const now = new Date();
+      let startDate = new Date();
+      if (timeframe === 'daily') startDate.setHours(0, 0, 0, 0);
+      else if (timeframe === 'weekly') startDate.setDate(now.getDate() - 7);
+      else if (timeframe === 'monthly') startDate.setDate(now.getDate() - 30);
+      
+      if (filter === 'all') {
+        result = result.filter(l => new Date(l.createdAt) >= startDate);
+      } else if (filter === 'admitted') {
+        result = result.filter(l => l.status === 'admitted' && new Date(l.createdAt) >= startDate);
+      } else if (filter === 'lost') {
+        result = result.filter(l => l.status === 'lost' && new Date(l.createdAt) >= startDate);
+      } else if (filter === 'breached') {
+        result = result.filter(l => l.slaStatus === 'breached'); // Active breaches
+      }
+    }
+    
+    return result;
+  }, [leads, filter, timeframe]);
+
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [showNewLeadForm, setShowNewLeadForm] = useState(false);
-  const [showReport, setShowReport] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('worklist');
 
   // Drag and Drop handlers for Kanban
@@ -59,18 +90,15 @@ export default function Dashboard() {
   const { urgentLeads, dueTodayLeads, newUnassigned, activeLeads } = useMemo(() => {
     const today = new Date();
     today.setHours(23, 59, 59, 999);
-    const active = leads.filter(l => l.status !== 'admitted' && l.status !== 'lost');
+    const active = filteredLeads.filter(l => l.status !== 'admitted' && l.status !== 'lost');
     
     const urgent = active.filter(l => l.urgencyLevel === 'immediate' || l.immediateSafetyConcern || l.slaStatus === 'breached');
     const dueToday = active.filter(l => !urgent.includes(l) && l.nextActionDue && new Date(l.nextActionDue) <= today);
     const unassigned = active.filter(l => !urgent.includes(l) && !dueToday.includes(l) && l.status === 'new' && !l.nextActionOwner);
     
     return { urgentLeads: urgent, dueTodayLeads: dueToday, newUnassigned: unassigned, activeLeads: active };
-  }, [leads]);
+  }, [filteredLeads]);
 
-  if (!isUnlocked) {
-    return <LockScreen />;
-  }
 
   const renderDashboardCards = () => (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-md mb-6">
@@ -170,7 +198,7 @@ export default function Dashboard() {
   const renderKanban = () => (
     <div className="kanban-board">
       {COLUMNS.map(col => {
-        const colLeads = leads.filter(l => l.status === col.id);
+        const colLeads = filteredLeads.filter(l => l.status === col.id);
         return (
           <div 
             key={col.id} 
@@ -207,14 +235,24 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen bg-[var(--color-surface)]">
-      <Header />
-      
+    <div className="flex flex-col flex-1 bg-[var(--color-surface)]">
       <main className="flex-1 p-6 md:p-8 max-w-[1600px] mx-auto w-full">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold mb-1">Admissions Command Center</h1>
-            <p className="text-muted text-sm">Track new inquiries, route urgent leads, and keep every follow-up moving.</p>
+            <h1 className="text-3xl font-bold mb-1 flex items-center gap-2">
+              Admissions Command Center
+              {filter && (
+                <button 
+                  className="btn btn-ghost btn-sm text-xs" 
+                  onClick={() => router.push('/app')}
+                >
+                  Clear Filters
+                </button>
+              )}
+            </h1>
+            <p className="text-muted text-sm">
+              {filter ? `Showing ${filter} leads (${timeframe})` : 'Track new inquiries, route urgent leads, and keep every follow-up moving.'}
+            </p>
           </div>
           <div className="flex items-center gap-2 glass-panel p-1 rounded-lg">
             <button 
@@ -232,7 +270,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {leads.length === 0 ? (
+        {filteredLeads.length === 0 ? (
           renderEmptyState()
         ) : (
           <>
@@ -243,20 +281,24 @@ export default function Dashboard() {
       </main>
 
       <div className="fixed bottom-6 right-6 flex gap-sm z-40">
-        <button 
-          className="btn btn-primary shadow-lg rounded-full h-14 w-14 p-0 flex items-center justify-center" 
-          onClick={() => setShowReport(true)}
-          title="Daily Report"
-        >
-          <BarChart2 size={24} />
-        </button>
-        <button 
-          className="btn btn-primary shadow-lg rounded-full h-14 w-14 p-0 flex items-center justify-center" 
-          onClick={() => setShowNewLeadForm(true)}
-          title="New Intake"
-        >
-          <Plus size={28} />
-        </button>
+        <div className="tooltip-container">
+          <Link 
+            href="/app/reports"
+            className="btn btn-primary shadow-lg rounded-full h-14 w-14 p-0 flex items-center justify-center" 
+          >
+            <BarChart2 size={24} />
+          </Link>
+          <span className="tooltip-text">Daily Report</span>
+        </div>
+        <div className="tooltip-container">
+          <button 
+            className="btn btn-primary shadow-lg rounded-full h-14 w-14 p-0 flex items-center justify-center" 
+            onClick={() => setShowNewLeadForm(true)}
+          >
+            <Plus size={28} />
+          </button>
+          <span className="tooltip-text">New Intake</span>
+        </div>
       </div>
 
       {selectedLeadId && (
@@ -269,9 +311,7 @@ export default function Dashboard() {
         <TwoLayerIntakeForm onClose={() => setShowNewLeadForm(false)} />
       )}
 
-      {showReport && (
-        <DailyReport onClose={() => setShowReport(false)} />
-      )}
+
     </div>
   );
 }

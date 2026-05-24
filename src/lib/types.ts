@@ -1,6 +1,17 @@
 export type LeadStatus = 'new' | 'contacted' | 'qualifying' | 'pending_verification' | 'tour_scheduled' | 'assessment_scheduled' | 'follow_up' | 'admitted' | 'lost';
 export type SLAStatus = 'fresh' | 'warning' | 'breached';
 
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'REP';
+
+export interface User {
+  id: string;
+  email: string;
+  role: UserRole;
+  locationId?: string;
+  name: string;
+}
+
+
 export type IntakeChannel = 'phone' | 'web_form' | 'referral_partner' | 'walk_in' | 'text';
 export type LeadSource = 'google' | 'therapist' | 'alumni' | 'hospital' | 'family_referral' | 'sober_living_referral' | 'other';
 export type PreferredContactMethod = 'call' | 'text' | 'email';

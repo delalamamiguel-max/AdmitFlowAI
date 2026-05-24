@@ -9,7 +9,9 @@ export default function LandingPage() {
       <header className="nav">
         <div className="nav-content">
           <div className="nav-logo">
-            Admit<span>Flow</span>AI
+            <Link href="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+              Admit<span>Flow</span>AI
+            </Link>
           </div>
           <nav className="nav-links">
             <Link href="/app">Log In</Link>

@@ -110,7 +110,7 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
   };
 
   return (
-    <div className="modal-overlay p-0 md:p-4" onClick={onClose}>
+    <div className="modal-overlay p-0 md:p-4">
       <div className="modal-content glass-panel md:rounded-xl rounded-none w-full h-full md:h-auto p-4 md:p-8" onClick={e => e.stopPropagation()}>
         <div className="flex justify-between items-start mb-6">
           <div>

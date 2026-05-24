@@ -4,9 +4,11 @@ import React, { useState, useEffect } from 'react';
 import { Unlock } from 'lucide-react';
 import { useLeads } from '@/lib/store';
 import { initializeEncryption } from '@/lib/crypto';
+import { UserRole, User } from '@/lib/types';
 
 export function LockScreen() {
   const { unlock } = useLeads();
+  const [email, setEmail] = useState('');
   const [passphrase, setPassphrase] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -19,8 +21,8 @@ export function LockScreen() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!passphrase.trim()) {
-      setError('Password is required');
+    if (!email.trim() || !passphrase.trim()) {
+      setError('Email and Password are required');
       return;
     }
 
@@ -28,8 +30,20 @@ export function LockScreen() {
     setError('');
     
     try {
+      // Mock Authentication Logic
+      let role: UserRole = 'REP';
+      if (email.toLowerCase().includes('super')) role = 'SUPER_ADMIN';
+      else if (email.toLowerCase().includes('admin')) role = 'ADMIN';
+
+      const mockUser: User = {
+        id: 'u_' + Math.random().toString(36).substring(2, 9),
+        email,
+        role,
+        name: email.split('@')[0],
+      };
+
       const key = await initializeEncryption(passphrase);
-      unlock(key);
+      unlock(key, mockUser);
       
       // Request notifications
       if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
@@ -51,18 +65,27 @@ export function LockScreen() {
           <h1 className="font-bold text-3xl mb-2" style={{ background: 'var(--color-brand)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             AdmitFlowAI
           </h1>
-          <p className="text-muted">Enter your center password to unlock the pipeline</p>
+          <p className="text-muted">Sign in to your Admissions Command Center</p>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-md text-left">
           <div>
+            <label className="block text-sm font-medium mb-1 text-muted">Email</label>
+            <input 
+              type="email" 
+              className="input mb-4" 
+              placeholder="name@center.com" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoFocus
+            />
+            <label className="block text-sm font-medium mb-1 text-muted">Password</label>
             <input 
               type="password" 
               className="input" 
               placeholder="Password..." 
               value={passphrase}
               onChange={(e) => setPassphrase(e.target.value)}
-              autoFocus
             />
             {error && <p className="text-xs text-[var(--color-sla-breached)] mt-1">{error}</p>}
           </div>

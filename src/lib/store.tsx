@@ -1,18 +1,19 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Lead, LeadStatus } from './types';
+import { Lead, LeadStatus, User } from './types';
 import { calculateSLADeadline, getSLAStatus } from './sla';
 
 interface LeadContextType {
   leads: Lead[];
   isUnlocked: boolean;
   cryptoKey: CryptoKey | null;
+  currentUser: User | null;
   addLead: (lead: Lead) => void;
   updateLead: (leadId: string, updates: Partial<Lead>) => void;
   moveLead: (leadId: string, newStatus: LeadStatus) => void;
   deleteLead: (leadId: string) => void;
-  unlock: (key: CryptoKey) => void;
+  unlock: (key: CryptoKey, user: User) => void;
   lock: () => void;
   generateLeadId: () => string;
 }
@@ -23,6 +24,7 @@ export function LeadProvider({ children }: { children: ReactNode }) {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [cryptoKey, setCryptoKey] = useState<CryptoKey | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('admitflow_leads');
@@ -69,13 +71,15 @@ export function LeadProvider({ children }: { children: ReactNode }) {
     saveLeads(leads.filter(l => l.leadId !== leadId));
   };
 
-  const unlock = (key: CryptoKey) => {
+  const unlock = (key: CryptoKey, user: User) => {
     setCryptoKey(key);
+    setCurrentUser(user);
     setIsUnlocked(true);
   };
 
   const lock = () => {
     setCryptoKey(null);
+    setCurrentUser(null);
     setIsUnlocked(false);
   };
 
@@ -104,7 +108,7 @@ export function LeadProvider({ children }: { children: ReactNode }) {
 
   return (
     <LeadContext.Provider value={{
-      leads, isUnlocked, cryptoKey, addLead, updateLead, moveLead, deleteLead, unlock, lock, generateLeadId
+      leads, isUnlocked, cryptoKey, currentUser, addLead, updateLead, moveLead, deleteLead, unlock, lock, generateLeadId
     }}>
       {children}
     </LeadContext.Provider>
