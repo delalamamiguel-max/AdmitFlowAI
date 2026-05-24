@@ -111,10 +111,11 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
 
   return (
     <div className="modal-overlay p-0 md:p-4" onClick={onClose}>
-      <div className="modal-content w-full h-full md:h-auto md:rounded-xl rounded-none p-4 md:p-8" onClick={e => e.stopPropagation()}>
+      <div className="modal-content glass-panel md:rounded-xl rounded-none w-full h-full md:h-auto p-4 md:p-8" onClick={e => e.stopPropagation()}>
         <button onClick={onClose} className="btn btn-ghost btn-sm absolute top-4 right-4 z-10 md:top-6 md:right-6">
           <X size={20} />
         </button>
+
         <div className="flex justify-between items-start mb-6 pr-8">
           <div>
             <h2 className="font-bold text-2xl">{lead.leadId}</h2>
