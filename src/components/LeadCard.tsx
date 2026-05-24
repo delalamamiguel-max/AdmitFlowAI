@@ -5,6 +5,7 @@ import { Lead } from '@/lib/types';
 import { useLeads } from '@/lib/store';
 import { decryptData } from '@/lib/crypto';
 import { SLATimer } from './SLATimer';
+import { User, Clock, AlertCircle } from 'lucide-react';
 
 function formatRelativeTime(timestamp: string | null): string {
   if (!timestamp) return 'Never';
@@ -16,6 +17,16 @@ function formatRelativeTime(timestamp: string | null): string {
   if (hours < 24) return `${hours}h ago`;
   const days = Math.floor(hours / 24);
   return `${days}d ago`;
+}
+
+function formatUrgency(urgency: string | null): { label: string, colorClass: string } | null {
+  if (!urgency) return null;
+  switch (urgency) {
+    case 'immediate': return { label: 'Immediate', colorClass: 'text-[var(--color-sla-breached)] bg-[var(--color-sla-breached)]/10' };
+    case 'same_day': return { label: 'Same Day', colorClass: 'text-[var(--color-sla-warning)] bg-[var(--color-sla-warning)]/10' };
+    case 'this_week': return { label: 'This Week', colorClass: 'text-[var(--color-brand)] bg-[var(--color-brand)]/10' };
+    default: return { label: urgency.replace('_', ' '), colorClass: 'text-muted bg-[var(--color-border)]' };
+  }
 }
 
 export function LeadCard({ lead, onSelect }: { lead: Lead, onSelect: () => void }) {
@@ -49,7 +60,7 @@ export function LeadCard({ lead, onSelect }: { lead: Lead, onSelect: () => void 
     e.dataTransfer.setData('text/plain', lead.leadId);
   };
 
-  const completedTasks = lead.tasks.filter(t => t.completed).length;
+  const urgencyProps = formatUrgency(lead.urgencyLevel);
 
   return (
     <div 
@@ -59,31 +70,59 @@ export function LeadCard({ lead, onSelect }: { lead: Lead, onSelect: () => void 
       onDragStart={handleDragStart}
       onClick={onSelect}
     >
-      <div className="flex justify-between items-center">
-        <span className="font-bold text-sm">{lead.leadId}</span>
-        <span className="text-xs text-muted">{formatRelativeTime(lead.lastContactTimestamp || lead.createdAt)}</span>
+      {/* Header: ID, Source, Time */}
+      <div className="flex justify-between items-center mb-1">
+        <div className="flex items-center gap-2">
+          <span className="font-bold text-sm">{lead.leadId}</span>
+          <span className="text-xs uppercase font-bold text-muted bg-[var(--color-surface)] px-1 rounded border border-[var(--color-border)]">
+            {lead.source.replace('_', ' ')}
+          </span>
+        </div>
+        <span className="text-xs text-muted" title="Last Contact">
+          {formatRelativeTime(lead.lastContactTimestamp || lead.createdAt)}
+        </span>
       </div>
       
-      <div className="font-medium">
-        {decryptedName}
+      {/* Client Name & Stage */}
+      <div className="flex justify-between items-start mb-3">
+        <div className="font-bold text-lg leading-tight">
+          {decryptedName}
+        </div>
+        <span className="badge text-xs capitalize whitespace-nowrap ml-2 shrink-0">
+          {lead.status.replace(/_/g, ' ')}
+        </span>
       </div>
 
-      <div className="flex justify-between items-center mt-2">
-        <span className="badge">{lead.source.replace('_', ' ')}</span>
-        {lead.tasks.length > 0 && (
-          <span className="text-xs text-muted">Tasks: {completedTasks}/{lead.tasks.length}</span>
+      {/* Meta: Urgency & Owner */}
+      <div className="flex items-center gap-3 mb-3">
+        {urgencyProps && (
+          <div className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded ${urgencyProps.colorClass}`}>
+            <AlertCircle size={12} />
+            {urgencyProps.label}
+          </div>
+        )}
+        {(lead.nextActionOwner || lead.assignedRepId) && (
+          <div className="flex items-center gap-1 text-xs text-muted">
+            <User size={12} />
+            {lead.nextActionOwner || lead.assignedRepId || 'Unassigned'}
+          </div>
         )}
       </div>
 
-      <div className="mt-2">
-        <SLATimer deadline={lead.slaDeadline} />
-      </div>
-
-      {lead.disposition && (
-        <div className="mt-2 text-xs text-muted border border-[var(--color-border)] rounded px-2 py-1 inline-block">
-          {lead.disposition.replace(/_/g, ' ')}
+      {/* Next Action & SLA */}
+      <div className="border-t border-[var(--color-border)] pt-3 mt-auto">
+        <div className="flex justify-between items-end">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs font-semibold text-muted flex items-center gap-1">
+              <Clock size={12} /> NEXT ACTION
+            </span>
+            <span className="text-sm font-medium">
+              {lead.logisticalNotes ? (lead.logisticalNotes.length > 30 ? lead.logisticalNotes.substring(0, 30) + '...' : lead.logisticalNotes) : 'No action set'}
+            </span>
+          </div>
+          <SLATimer deadline={lead.slaDeadline} />
         </div>
-      )}
+      </div>
     </div>
   );
 }

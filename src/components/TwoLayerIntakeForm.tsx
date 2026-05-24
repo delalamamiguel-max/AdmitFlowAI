@@ -146,7 +146,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="modal-overlay p-0 md:p-4" onClick={onClose}>
-      <div className="modal-content glass-panel max-w-3xl w-full h-full md:h-auto flex flex-col md:rounded-xl rounded-none p-0 md:p-8" onClick={e => e.stopPropagation()}>
+      <div className="modal-content max-w-3xl w-full h-full md:h-auto flex flex-col md:rounded-xl rounded-none p-0 md:p-8" onClick={e => e.stopPropagation()}>
         <button onClick={onClose} className="btn btn-ghost btn-sm absolute top-4 right-4 z-10 md:top-6 md:right-6">
           <X size={18} />
         </button>
