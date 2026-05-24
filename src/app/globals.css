@@ -1,17 +1,17 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* Tech-Forward Color Tokens - Dark Mode Default */
+  /* Tech-Forward Color Tokens - Light Mode Default */
   --brand-light: #4f46e5; /* Indigo 600 */
   --brand-dark: #6366f1; /* Indigo 500 */
   
-  --surface-light: #ffffff;
+  --surface-light: #fafafa;
   --surface-dark: #000000;
   
-  --card-light: #f4f4f5;
+  --card-light: #ffffff;
   --card-dark: rgba(255, 255, 255, 0.03);
   
-  --glass-light: rgba(255, 255, 255, 0.7);
+  --glass-light: rgba(255, 255, 255, 0.85);
   --glass-dark: rgba(20, 20, 20, 0.6);
   
   --text-light: #09090b;
@@ -28,13 +28,13 @@
   --border-dark: rgba(255, 255, 255, 0.1);
 
   /* Semantic Tokens */
-  --color-brand: var(--brand-dark);
-  --color-surface: var(--surface-dark);
-  --color-surface-card: var(--card-dark);
-  --color-surface-glass: var(--glass-dark);
-  --color-text: var(--text-dark);
-  --color-text-secondary: var(--text-sec-dark);
-  --color-border: var(--border-dark);
+  --color-brand: var(--brand-light);
+  --color-surface: var(--surface-light);
+  --color-surface-card: var(--card-light);
+  --color-surface-glass: var(--glass-light);
+  --color-text: var(--text-light);
+  --color-text-secondary: var(--text-sec-light);
+  --color-border: var(--border-light);
   
   --color-sla-fresh: var(--sla-green);
   --color-sla-warning: var(--sla-orange);
@@ -99,7 +99,7 @@ p { text-wrap: pretty; }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255,255,255,0.2);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text) 20%, transparent);
 }
 
 .btn-danger {
@@ -321,11 +321,11 @@ p { text-wrap: pretty; }
 }
 
 .hero-title {
-  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
   font-weight: 800;
-  line-height: 1.1;
+  line-height: 1.2;
   letter-spacing: -0.04em;
-  max-width: 900px;
+  max-width: 800px;
 }
 
 .hero-title span {
@@ -343,8 +343,8 @@ p { text-wrap: pretty; }
 
 .hero-actions {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 1.5rem;
+  margin-top: 2rem;
   flex-wrap: wrap;
   justify-content: center;
 }

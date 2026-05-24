@@ -9,7 +9,7 @@ export default function LandingPage() {
       <header className="nav">
         <div className="nav-content">
           <div className="nav-logo">
-            Admit<span>Flow</span> OS
+            Admit<span>Flow</span>AI
           </div>
           <nav className="nav-links">
             <Link href="/app">Log In</Link>
@@ -21,10 +21,10 @@ export default function LandingPage() {
       {/* 1. Hero Section */}
       <section className="section section-dark hero">
         <h1 className="hero-title">
-          Admissions follow-up, <br/><span>without the chaos.</span>
+          Admissions follow-up, <span>without the chaos.</span>
         </h1>
         <p className="hero-subtitle">
-          AdmitFlow OS helps treatment and sober-living teams capture inquiries, route urgent leads, assign owners, and schedule next steps without turning intake into a clinical chart.
+          AdmitFlowAI helps treatment and sober-living teams capture inquiries, route urgent leads, assign owners, and schedule next steps without turning intake into a clinical chart.
         </p>
         <div className="hero-actions">
           <Link href="/app" className="btn btn-primary">
@@ -122,7 +122,7 @@ export default function LandingPage() {
           <div>
             <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 800, marginBottom: '1.5rem', lineHeight: 1.1 }}>The lightweight admissions command center.</h2>
             <p style={{ fontSize: '1.25rem', color: 'var(--color-text-secondary)', marginBottom: '2rem' }}>
-              Built specifically for behavioral health operations, AdmitFlow OS strips away the clinical clutter so your team can focus on what matters: speed to contact, clear ownership, and seamless routing.
+              Built specifically for behavioral health operations, AdmitFlowAI strips away the clinical clutter so your team can focus on what matters: speed to contact, clear ownership, and seamless routing.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {[
@@ -189,7 +189,7 @@ export default function LandingPage() {
             <ShieldCheck size={300} style={{ position: 'absolute', top: '-50px', right: '-50px', color: 'var(--color-brand)', opacity: 0.1, transform: 'rotate(15deg)' }} />
             <h2 style={{ fontSize: 'clamp(2rem, 3vw, 2.5rem)', fontWeight: 800, marginBottom: '1rem', position: 'relative', zIndex: 10 }}>Built to keep intake operational, not clinical.</h2>
             <p style={{ fontSize: '1.25rem', color: 'var(--color-text-secondary)', marginBottom: '3rem', maxWidth: '800px', position: 'relative', zIndex: 10 }}>
-              We actively prevent your admissions workflow from becoming a HIPAA liability. AdmitFlow OS uses client-side encryption for contact info and strictly bans the collection of heavy clinical data in the pipeline.
+              We actively prevent your admissions workflow from becoming a HIPAA liability. AdmitFlowAI uses client-side encryption for contact info and strictly bans the collection of heavy clinical data in the pipeline.
             </p>
             
             <div className="grid-2" style={{ gap: '2rem', alignItems: 'start' }}>
@@ -235,8 +235,8 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer style={{ padding: '2rem', textAlign: 'center', color: 'var(--color-text-secondary)', borderTop: '1px solid var(--color-border)', background: 'var(--color-surface)' }}>
-        <div style={{ fontWeight: 'bold', fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-text)' }}>AdmitFlow OS</div>
-        <p style={{ fontSize: '0.875rem' }}>© {new Date().getFullYear()} AdmitFlow OS. All rights reserved.</p>
+        <div style={{ fontWeight: 'bold', fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--color-text)' }}>AdmitFlowAI</div>
+        <p style={{ fontSize: '0.875rem' }}>© {new Date().getFullYear()} AdmitFlowAI. All rights reserved.</p>
       </footer>
     </div>
   );
