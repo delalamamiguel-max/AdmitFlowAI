@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, ShieldAlert, CheckCircle2, PhoneCall, LayoutDashboard, Clock, Users, ShieldCheck, X } from 'lucide-react';
+import { ArrowRight, ShieldAlert, CheckCircle2, PhoneCall, LayoutDashboard, Clock, ShieldCheck, X } from 'lucide-react';
 
 export default function LandingPage() {
   return (
@@ -90,7 +90,7 @@ export default function LandingPage() {
       <section className="section section-dark">
         <div className="container">
           <div className="section-header">
-            <h2>Admissions shouldn't feel this hard.</h2>
+            <h2>Admissions shouldn&apos;t feel this hard.</h2>
           </div>
           <div className="grid-3">
             <div className="feature-card">
@@ -105,7 +105,7 @@ export default function LandingPage() {
                 <Clock size={24} />
               </div>
               <h3>Missed Follow-Ups</h3>
-              <p>Urgent leads aren't prioritized, ownership is unclear, and hot leads go cold because someone forgot to call back.</p>
+              <p>Urgent leads aren&apos;t prioritized, ownership is unclear, and hot leads go cold because someone forgot to call back.</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon" style={{ color: 'var(--color-text-secondary)' }}>

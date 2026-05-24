@@ -3,9 +3,8 @@
 import React, { useState, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useLeads } from '@/lib/store';
-import { LeadStatus, Lead } from '@/lib/types';
+import { LeadStatus } from '@/lib/types';
 import Link from 'next/link';
-import { Header } from '@/components/Header';
 import { LeadCard } from '@/components/LeadCard';
 import { LeadModal } from '@/components/LeadModal';
 import { TwoLayerIntakeForm } from '@/components/TwoLayerIntakeForm';
@@ -40,7 +39,7 @@ export default function Dashboard() {
     
     if (filter && timeframe) {
       const now = new Date();
-      let startDate = new Date();
+      const startDate = new Date();
       if (timeframe === 'daily') startDate.setHours(0, 0, 0, 0);
       else if (timeframe === 'weekly') startDate.setDate(now.getDate() - 7);
       else if (timeframe === 'monthly') startDate.setDate(now.getDate() - 30);

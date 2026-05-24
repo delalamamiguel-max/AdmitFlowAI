@@ -1,4 +1,4 @@
-import { LeadStatus, SLAStatus, SLAConfig } from './types';
+import { LeadStatus, SLAStatus } from './types';
 
 export const SLA_CONFIGS: Record<LeadStatus, number> = {
   new: 15,

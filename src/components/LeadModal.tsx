@@ -17,15 +17,10 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
   const [decryptedCallbackName, setDecryptedCallbackName] = useState('');
   const [decryptedCallbackPhone, setDecryptedCallbackPhone] = useState('');
   
-  const [notes, setNotes] = useState('');
+  const [notes, setNotes] = useState(lead?.logisticalNotes || '');
   const [phiWarning, setPhiWarning] = useState('');
   const [newTaskTodo, setNewTaskTodo] = useState('');
 
-  useEffect(() => {
-    if (lead) {
-      setNotes(lead.logisticalNotes);
-    }
-  }, [lead]);
 
   useEffect(() => {
     let isMounted = true;

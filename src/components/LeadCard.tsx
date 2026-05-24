@@ -48,7 +48,7 @@ export function LeadCard({ lead, onSelect }: { lead: Lead, onSelect: () => void 
         const jsonStr = await decryptData(lead.encryptedPayload.ciphertext, lead.encryptedPayload.iv, cryptoKey);
         const data = JSON.parse(jsonStr);
         if (isMounted) setDecryptedName(data.clientName);
-      } catch (e) {
+      } catch {
         if (isMounted) setDecryptedName('[Decryption Error]');
       }
     }

@@ -30,6 +30,7 @@ export function LeadProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem('admitflow_leads');
     if (stored) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setLeads(JSON.parse(stored));
       } catch (e) {
         console.error('Failed to parse leads', e);

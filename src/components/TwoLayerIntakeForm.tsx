@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLeads } from '@/lib/store';
 import { encryptData } from '@/lib/crypto';
 import { containsPHI, PHI_WARNING_MESSAGE } from '@/lib/phi-guard';
@@ -24,7 +24,7 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
   const [urgency, setUrgency] = useState<UrgencyLevel | ''>('');
   
   // Next Action fields (Layer 1)
-  const [nextActionOwner, setNextActionOwner] = useState('');
+  
   const [nextActionDue, setNextActionDue] = useState(''); // simplified date/time string for now
   
   // Layer 2 Fields (Fit & Follow Up)
@@ -32,21 +32,17 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
   const [awareOfInquiry, setAwareOfInquiry] = useState<boolean | null>(null);
   const [callbackName, setCallbackName] = useState('');
   const [callbackNumber, setCallbackNumber] = useState('');
-  const [permissionToLeaveVoicemail, setPermissionToLeaveVoicemail] = useState<boolean | null>(null);
   
   const [serviceInterest, setServiceInterest] = useState<ServiceInterest | ''>('');
-  const [admitTimeline, setAdmitTimeline] = useState('');
   const [transportationConcern, setTransportationConcern] = useState<boolean | null>(null);
   
   const [paymentPath, setPaymentPath] = useState<PaymentPath | ''>('');
   const [insuranceCarrier, setInsuranceCarrier] = useState('');
-  const [inNetworkRequired, setInNetworkRequired] = useState<boolean | null>(null);
   const [needsBenefitsVerification, setNeedsBenefitsVerification] = useState<boolean | null>(null);
 
   const [immediateSafetyConcern, setImmediateSafetyConcern] = useState(false);
   const [logisticalNotes, setLogisticalNotes] = useState('');
 
-  const [priorTreatment, setPriorTreatment] = useState<PriorProgram[]>([]);
 
   const handleNotesBlur = () => {
     const check = containsPHI(logisticalNotes);
