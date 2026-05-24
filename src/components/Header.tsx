@@ -54,6 +54,11 @@ export function Header() {
       </div>
       
       <nav className="hidden md:flex items-center text-sm font-medium" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+        {currentUser?.role === 'ADMIN' && (
+          <Link href="/app/admin" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+            <LayoutDashboard size={16} /> Dashboard
+          </Link>
+        )}
         {currentUser?.role !== 'SUPER_ADMIN' && (
           <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
             <Inbox size={16} /> Intake
@@ -61,9 +66,6 @@ export function Header() {
         )}
         {currentUser?.role === 'ADMIN' && (
           <>
-            <Link href="/app/admin" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <LayoutDashboard size={16} /> Dashboard
-            </Link>
             <Link href="/app/reports" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
               <BarChart2 size={16} /> Team Reports
             </Link>

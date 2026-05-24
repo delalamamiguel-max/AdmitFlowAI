@@ -3,7 +3,7 @@
 import React from 'react';
 import { useLeads } from '@/lib/store';
 import Link from 'next/link';
-import { BarChart2, Settings, Users } from 'lucide-react';
+import { Inbox, BarChart2, Settings, Users } from 'lucide-react';
 
 export default function AdminCommandCenter() {
   const { currentUser } = useLeads();

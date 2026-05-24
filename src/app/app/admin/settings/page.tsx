@@ -9,6 +9,10 @@ import { ArrowLeft, Edit, UserPlus, Trash2, ShieldOff, ShieldAlert, ArrowRightLe
 export default function AdminSettings() {
   const { leads, users, currentUser, updateLead, addUser, updateUser, deleteUser, generateLeadId } = useLeads();
 
+  const [showReassignModal, setShowReassignModal] = useState(false);
+  const [showSlaModal, setShowSlaModal] = useState(false);
+  const [slaConfigs, setSlaConfigs] = useState({ new: 15, qualifying: 120 });
+
   if (currentUser?.role !== 'ADMIN') {
     return (
       <main className="flex-1 p-6 flex flex-col items-center justify-center text-center">
@@ -24,7 +28,6 @@ export default function AdminSettings() {
   const [editingUser, setEditingUser] = useState<Partial<User> | null>(null);
 
   // State for reassign leads
-  const [showReassignModal, setShowReassignModal] = useState(false);
   const [reassignFrom, setReassignFrom] = useState('');
   const [reassignTo, setReassignTo] = useState('');
 
@@ -143,13 +146,18 @@ export default function AdminSettings() {
             <div className="flex flex-col gap-4 text-sm">
               <div className="flex justify-between items-center p-3 rounded bg-[var(--color-surface)]">
                 <span>New Inquiry (Fresh)</span>
-                <span className="font-bold">15 minutes</span>
+                <span className="font-bold">{slaConfigs.new} minutes</span>
               </div>
               <div className="flex justify-between items-center p-3 rounded bg-[var(--color-surface)]">
                 <span>Qualifying</span>
-                <span className="font-bold">2 hours</span>
+                <span className="font-bold">{slaConfigs.qualifying} minutes</span>
               </div>
-              <button className="btn btn-ghost btn-sm text-[var(--color-brand)] mt-2">Edit SLAs...</button>
+              <button 
+                className="btn btn-ghost btn-sm text-[var(--color-brand)] mt-2"
+                onClick={() => setShowSlaModal(true)}
+              >
+                Edit SLAs...
+              </button>
             </div>
           </section>
 
@@ -209,6 +217,33 @@ export default function AdminSettings() {
               <div className="flex gap-3 justify-end mt-4">
                 <button type="button" className="btn btn-ghost" onClick={() => setShowReassignModal(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Reassign</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* SLA Modal */}
+      {showSlaModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4">
+          <div className="glass-panel w-full max-w-md p-6">
+            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">Edit SLAs</h2>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              setShowSlaModal(false);
+              alert('SLA settings updated successfully!');
+            }} className="flex flex-col gap-4">
+              <div>
+                <label className="block text-sm font-medium text-muted mb-1">New Inquiry (minutes)</label>
+                <input required type="number" min="1" className="input w-full" value={slaConfigs.new} onChange={(e) => setSlaConfigs({ ...slaConfigs, new: parseInt(e.target.value) || 15 })} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-muted mb-1">Qualifying (minutes)</label>
+                <input required type="number" min="1" className="input w-full" value={slaConfigs.qualifying} onChange={(e) => setSlaConfigs({ ...slaConfigs, qualifying: parseInt(e.target.value) || 120 })} />
+              </div>
+              <div className="flex gap-3 justify-end mt-4">
+                <button type="button" className="btn btn-ghost" onClick={() => setShowSlaModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Save SLAs</button>
               </div>
             </form>
           </div>
