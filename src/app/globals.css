@@ -1485,3 +1485,38 @@ p { text-wrap: pretty; }
 .fixed { position: fixed; }
 .z-30 { z-index: 30; }
 .z-40 { z-index: 40; }
+
+/* --- Missing Utility Classes for Matchmaker Layouts --- */
+.gap-xs { gap: 0.25rem; }
+.gap-sm { gap: 0.5rem; }
+.gap-md { gap: 1rem; }
+.gap-lg { gap: 1.5rem; }
+.gap-xl { gap: 2rem; }
+
+.mb-xs { margin-bottom: 0.25rem; }
+.mb-sm { margin-bottom: 0.5rem; }
+.mb-md { margin-bottom: 1rem; }
+.mb-lg { margin-bottom: 1.5rem; }
+.mb-xl { margin-bottom: 2rem; }
+
+.mt-xs { margin-top: 0.25rem; }
+.mt-sm { margin-top: 0.5rem; }
+.mt-md { margin-top: 1rem; }
+.mt-lg { margin-top: 1.5rem; }
+.mt-xl { margin-top: 2rem; }
+
+.p-xs { padding: 0.25rem; }
+.p-sm { padding: 0.5rem; }
+.p-md { padding: 1rem; }
+.p-lg { padding: 1.5rem; }
+.p-xl { padding: 2rem; }
+
+.px-md { padding-left: 1rem; padding-right: 1rem; }
+.py-lg { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+
+.max-w-5xl { max-width: 64rem; margin-left: auto; margin-right: auto; }
+
+@media (min-width: 1024px) {
+  .lg\:col-span-1 { grid-column: span 1 / span 1; }
+  .lg\:col-span-2 { grid-column: span 2 / span 2; }
+}
