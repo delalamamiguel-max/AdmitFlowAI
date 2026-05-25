@@ -1,0 +1,190 @@
+with open('src/lib/store.tsx', 'r') as f:
+    content = f.read()
+
+# 1. Add users to LeadContextType
+content = content.replace(
+"""interface LeadContextType {
+  leads: Lead[];
+  isUnlocked: boolean;
+  cryptoKey: CryptoKey | null;
+  currentUser: User | null;
+  addLead: (lead: Lead) => void;""",
+"""interface LeadContextType {
+  leads: Lead[];
+  users: User[];
+  isUnlocked: boolean;
+  cryptoKey: CryptoKey | null;
+  currentUser: User | null;
+  addLead: (lead: Lead) => void;
+  addUser: (user: User) => void;
+  updateUser: (userId: string, updates: Partial<User>) => void;
+  deleteUser: (userId: string) => void;
+  generateMockData: () => void;"""
+)
+
+# 2. Add users state and functions
+content = content.replace(
+"""export function LeadProvider({ children }: { children: ReactNode }) {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [cryptoKey, setCryptoKey] = useState<CryptoKey | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);""",
+"""export function LeadProvider({ children }: { children: ReactNode }) {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [cryptoKey, setCryptoKey] = useState<CryptoKey | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);"""
+)
+
+# 3. Add users persistence in useEffect
+content = content.replace(
+"""  useEffect(() => {
+    const stored = localStorage.getItem('admitflow_leads');
+    if (stored) {
+      try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setLeads(JSON.parse(stored));
+      } catch (e) {
+        console.error('Failed to parse leads', e);
+      }
+    }
+  }, []);""",
+"""  useEffect(() => {
+    const stored = localStorage.getItem('admitflow_leads');
+    if (stored) {
+      try {
+        const parsedLeads = JSON.parse(stored);
+        setLeads(parsedLeads);
+        if (parsedLeads.length === 0) {
+          generateMockData();
+        }
+      } catch (e) {
+        console.error('Failed to parse leads', e);
+      }
+    } else {
+      generateMockData();
+    }
+
+    const storedUsers = localStorage.getItem('admitflow_users');
+    if (storedUsers) {
+      try {
+        setUsers(JSON.parse(storedUsers));
+      } catch (e) {
+        console.error('Failed to parse users', e);
+      }
+    } else {
+      const defaultUsers: User[] = [
+        { id: 'user_1', email: 'intake@admitflow.com', name: 'Intake Rep (Test)', role: 'REP', status: 'active' },
+        { id: 'admin_1', email: 'admin@admitflow.com', name: 'Admin (Test)', role: 'ADMIN', status: 'active' },
+        { id: 'super_1', email: 'super@admitflow.com', name: 'Super Admin', role: 'SUPER_ADMIN', status: 'active' }
+      ];
+      setUsers(defaultUsers);
+      localStorage.setItem('admitflow_users', JSON.stringify(defaultUsers));
+    }
+  }, []);
+
+  const saveUsers = (newUsers: User[]) => {
+    setUsers(newUsers);
+    localStorage.setItem('admitflow_users', JSON.stringify(newUsers));
+  };
+
+  const addUser = (user: User) => {
+    saveUsers([...users, user]);
+  };
+
+  const updateUser = (userId: string, updates: Partial<User>) => {
+    saveUsers(users.map(u => u.id === userId ? { ...u, ...updates } : u));
+  };
+
+  const deleteUser = (userId: string) => {
+    saveUsers(users.filter(u => u.id !== userId));
+  };
+
+  const generateMockData = () => {
+    const mockLeads: Lead[] = Array.from({ length: 20 }).map((_, i) => {
+      const statuses: LeadStatus[] = ['new', 'contacted', 'qualifying', 'tour_scheduled', 'admitted', 'lost'];
+      const sources: LeadSource[] = ['google', 'therapist', 'hospital', 'family_referral'];
+      const channels: IntakeChannel[] = ['phone', 'web_form', 'referral_partner'];
+      
+      const status = statuses[i % statuses.length];
+      const slaStatus = i % 3 === 0 ? 'breached' : i % 2 === 0 ? 'warning' : 'fresh';
+      
+      const now = new Date();
+      now.setDate(now.getDate() - (i % 15)); // Scatter dates over last 15 days
+
+      return {
+        leadId: `AF-${10000 + i}`,
+        createdAt: now.toISOString(),
+        updatedAt: now.toISOString(),
+        status,
+        channel: channels[i % channels.length],
+        source: sources[i % sources.length],
+        assignedRepId: i % 2 === 0 ? 'user_1' : 'admin_1',
+        preferredContactMethod: 'call',
+        bestContactWindow: 'Morning',
+        encryptedPayload: null, // Simulated decryption bypass for UI purposes
+        callerRole: 'self',
+        awareOfInquiry: true,
+        permissionToLeaveVoicemail: true,
+        serviceInterest: 'residential_referral',
+        desiredLocation: null,
+        admitTimeline: 'within_24_hours',
+        transportationConcern: false,
+        treatmentOrHousing: 'treatment',
+        ageBand: '25_to_34',
+        genderIdentity: 'Male',
+        safePlaceToTalk: true,
+        environment: 'at_home',
+        employmentOrSchoolObligations: false,
+        activeLegalRequirements: 'no',
+        socialSupport: 'family',
+        urgencyLevel: 'immediate',
+        recentSubstanceUse: 'yes',
+        medicalSafetyConcern: 'no',
+        immediateSafetyConcern: false,
+        paymentPath: 'commercial_insurance',
+        insuranceCarrier: 'Aetna',
+        inNetworkRequired: 'yes',
+        budgetSensitivity: 'moderate',
+        needsBenefitsVerification: true,
+        priorTreatment: ['none'],
+        priorSoberLiving: false,
+        promptForCall: 'family_request',
+        biggestBarrier: 'cost',
+        disposition: 'qualified',
+        nextActionOwner: null,
+        nextActionDue: null,
+        followupCadence: 'same_day',
+        followupChannel: 'call',
+        logisticalNotes: 'Mock data generated for QA',
+        tasks: [],
+        slaDeadline: new Date(Date.now() + 3600000).toISOString(),
+        slaStatus
+      };
+    });
+    setLeads(mockLeads);
+    localStorage.setItem('admitflow_leads', JSON.stringify(mockLeads));
+  };
+"""
+)
+
+# 4. Expose in Context Provider
+content = content.replace(
+"""  return (
+    <LeadContext.Provider value={{
+      leads, isUnlocked, cryptoKey, currentUser, addLead, updateLead, moveLead, deleteLead, unlock, lock, generateLeadId
+    }}>""",
+"""  return (
+    <LeadContext.Provider value={{
+      leads, users, isUnlocked, cryptoKey, currentUser, addLead, updateLead, moveLead, deleteLead, addUser, updateUser, deleteUser, unlock, lock, generateLeadId, generateMockData
+    }}>"""
+)
+
+# Import fix
+content = content.replace("import { Lead, LeadStatus, User } from './types';", "import { Lead, LeadStatus, User, LeadSource, IntakeChannel } from './types';")
+
+
+with open('src/lib/store.tsx', 'w') as f:
+    f.write(content)
+
