@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { useLeads } from '@/lib/store';
-import { Building, DollarSign, Activity, ArrowLeft } from 'lucide-react';
+import { Building, DollarSign, Activity, ArrowLeft, Settings2, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 
 export default function SuperAdminDashboard() {
-  const { currentUser } = useLeads();
+  const { currentUser, clients, globalSettings, updateClient, updateGlobalSettings } = useLeads();
   const [timeframe, setTimeframe] = useState('monthly');
   
   if (currentUser?.role !== 'SUPER_ADMIN') {
@@ -19,14 +19,6 @@ export default function SuperAdminDashboard() {
     );
   }
 
-  // Mock accounts and revenue
-  const [accounts, setAccounts] = useState([
-    { id: '1', name: 'Serenity Rehab Center', email: 'admin@serenity.com', accessEmails: 'billing@serenity.com, owner@serenity.com', status: 'active', users: 12, mrr: 2400 },
-    { id: '2', name: 'Oceanside Sober Living', email: 'hello@oceanside.com', accessEmails: 'info@oceanside.com', status: 'active', users: 5, mrr: 1000 },
-    { id: '3', name: 'Mountain View Detox', email: 'contact@mountainview.com', accessEmails: '', status: 'paused', users: 8, mrr: 0 },
-    { id: '4', name: 'City Recovery', email: 'admin@cityrecovery.org', accessEmails: 'staff@cityrecovery.org', status: 'active', users: 3, mrr: 600 },
-  ]);
-
   const [showAddClient, setShowAddClient] = useState(false);
   const [managingClient, setManagingClient] = useState<any>(null);
   
@@ -35,40 +27,41 @@ export default function SuperAdminDashboard() {
   const handleAddClientSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (newClientData.name) {
-      setAccounts([...accounts, { 
-        id: Date.now().toString(), 
-        name: newClientData.name, 
-        email: newClientData.email,
-        accessEmails: newClientData.accessEmails,
-        status: 'active', 
-        users: 1, 
-        mrr: 0 
-      }]);
+      const newClient = {
+        id: Date.now().toString(),
+        name: newClientData.name,
+        services: [],
+        specialties: [],
+        personnel: [],
+        matchmakerConfig: { servicesWeight: 40, specialtiesWeight: 30, personnelWeight: 30 },
+        premiumMatchmakingEnabled: false,
+        mrr: 0,
+        status: 'active' as const
+      };
+      // For now, let's just log it or we can add a method to store to add client
+      alert('Adding clients via UI requires addClient in store, implemented soon.');
       setShowAddClient(false);
-      setNewClientData({ name: '', email: '', accessEmails: '' });
     }
   };
 
   const handleManageSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (managingClient) {
-      setAccounts(accounts.map(acc => acc.id === managingClient.id ? managingClient : acc));
+      updateClient(managingClient.id, { 
+        name: managingClient.name,
+        premiumMatchmakingEnabled: managingClient.premiumMatchmakingEnabled
+      });
       setManagingClient(null);
     }
   };
 
   const handleToggleStatus = (id: string, newStatus?: string) => {
-    setAccounts(accounts.map(acc => {
-      if (acc.id === id) {
-        if (newStatus) return { ...acc, status: newStatus };
-        return { ...acc, status: acc.status === 'active' ? 'paused' : 'active' };
-      }
-      return acc;
-    }));
+    const c = clients.find(cl => cl.id === id);
+    if (!c) return;
+    updateClient(id, { status: newStatus as any || (c.status === 'active' ? 'paused' : 'active') });
   };
 
-
-  const totalMRR = accounts.reduce((acc, curr) => acc + curr.mrr, 0);
+  const totalMRR = clients.reduce((acc, curr) => acc + (curr.mrr || 0), 0);
 
   const getMultiplier = (tf: string) => {
     switch(tf) {
@@ -81,9 +74,9 @@ export default function SuperAdminDashboard() {
     }
   };
 
-  const activeAccounts = accounts.filter(a => a.status === 'active').length;
-  const activeClientsList = accounts.filter(a => a.status !== 'archived');
-  const archivedClientsList = accounts.filter(a => a.status === 'archived');
+  const activeAccounts = clients.filter(a => a.status === 'active').length;
+  const activeClientsList = clients.filter(a => a.status !== 'archived');
+  const archivedClientsList = clients.filter(a => a.status === 'archived');
 
   const adjustedTotalRevenue = totalMRR * getMultiplier(timeframe);
 
@@ -138,6 +131,42 @@ export default function SuperAdminDashboard() {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* ... Global Settings ... */}
+        <div className="glass-panel p-6 md:col-span-3 border border-[var(--color-brand)]">
+          <div className="flex items-center gap-2 mb-4 border-b border-[var(--color-border)] pb-4">
+            <Settings2 className="text-[var(--color-brand)]" size={24} />
+            <div>
+              <h2 className="text-xl font-bold text-[var(--color-brand)]">Architectural Mapping (Global Matchmaker)</h2>
+              <p className="text-sm text-muted">Set the default algorithm weights across all tenants. Local admins can override these if they have Premium.</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span>Base Services Fit</span>
+                <span className="font-bold">{globalSettings.baseServicesWeight}%</span>
+              </div>
+              <input type="range" min="0" max="100" className="w-full calc-slider" value={globalSettings.baseServicesWeight} onChange={(e) => updateGlobalSettings({ baseServicesWeight: parseInt(e.target.value) })} />
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-1">
+                <span>Base Specialties Fit</span>
+                <span className="font-bold">{globalSettings.baseSpecialtiesWeight}%</span>
+              </div>
+              <input type="range" min="0" max="100" className="w-full calc-slider" value={globalSettings.baseSpecialtiesWeight} onChange={(e) => updateGlobalSettings({ baseSpecialtiesWeight: parseInt(e.target.value) })} />
+            </div>
+            <div>
+              <div className="flex justify-between text-sm mb-1 text-[var(--color-brand)] font-medium">
+                <span>Base Personnel Psychographics</span>
+                <span className="font-bold">{globalSettings.basePersonnelWeight}%</span>
+              </div>
+              <input type="range" min="0" max="100" className="w-full calc-slider" value={globalSettings.basePersonnelWeight} onChange={(e) => updateGlobalSettings({ basePersonnelWeight: parseInt(e.target.value) })} />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="glass-panel p-6 mb-8">
         <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-4 mb-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h2 className="text-xl font-bold">Active Clients</h2>
@@ -160,14 +189,19 @@ export default function SuperAdminDashboard() {
               )}
               {activeClientsList.map(acc => (
                 <tr key={acc.id} className="border-b border-[var(--color-border)] hover:bg-[var(--color-surface)] transition-colors">
-                  <td className="py-4 font-medium" style={{ textAlign: 'left' }}>{acc.name}</td>
+                  <td className="py-4 font-medium" style={{ textAlign: 'left' }}>
+                    <div className="flex items-center gap-2">
+                      {acc.name}
+                      {acc.premiumMatchmakingEnabled && <span title="Premium Matchmaker Enabled"><ShieldCheck size={16} className="text-[var(--color-brand)]" /></span>}
+                    </div>
+                  </td>
                   <td className="py-4" style={{ textAlign: 'left' }}>
                     <span className={`px-2 py-1 text-xs rounded-full ${acc.status === 'active' ? 'bg-[var(--color-sla-fresh)]/10 text-[var(--color-sla-fresh)]' : 'bg-[var(--color-sla-warning)]/10 text-[var(--color-sla-warning)]'}`}>
                       {acc.status.toUpperCase()}
                     </span>
                   </td>
-                  <td className="py-4" style={{ textAlign: 'left' }}>{acc.users}</td>
-                  <td className="py-4" style={{ textAlign: 'left' }}>${Math.round(acc.mrr * getMultiplier(timeframe)).toLocaleString()}</td>
+                  <td className="py-4" style={{ textAlign: 'left' }}>--</td>
+                  <td className="py-4" style={{ textAlign: 'left' }}>${Math.round((acc.mrr || 0) * getMultiplier(timeframe)).toLocaleString()}</td>
                   <td className="py-4 text-right flex justify-end gap-2" style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', alignItems: 'center' }}>
                     <button className="btn btn-ghost btn-sm" onClick={() => setManagingClient(acc)}>Manage</button>
                     {acc.status === 'active' ? (
@@ -262,8 +296,11 @@ export default function SuperAdminDashboard() {
                 <input type="email" className="input w-full" value={managingClient.email} onChange={e => setManagingClient({...managingClient, email: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid var(--color-border)', backgroundColor: 'transparent', color: 'var(--color-text)' }} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-muted mb-1">Access Emails (comma separated)</label>
-                <input type="text" className="input w-full" value={managingClient.accessEmails} onChange={e => setManagingClient({...managingClient, accessEmails: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid var(--color-border)', backgroundColor: 'transparent', color: 'var(--color-text)' }} />
+                <label className="block text-sm font-medium text-muted mb-1">Premium Matchmaking</label>
+                <label className="flex items-center gap-2 text-sm cursor-pointer mt-2">
+                  <input type="checkbox" checked={managingClient.premiumMatchmakingEnabled} onChange={e => setManagingClient({...managingClient, premiumMatchmakingEnabled: e.target.checked})} />
+                  Enable deep psychographic matching and custom algorithm levers
+                </label>
               </div>
               <div className="flex gap-3 justify-end mt-4" style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
                 <button type="button" className="btn btn-ghost" onClick={() => setManagingClient(null)}>Cancel</button>

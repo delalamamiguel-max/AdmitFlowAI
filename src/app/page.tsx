@@ -48,6 +48,7 @@ export default function LandingPage() {
           </div>
           <nav className="nav-links">
             <a href="#why">Why</a>
+            <a href="#matchmaker">Matchmaker</a>
             <a href="#calculator">ROI</a>
             <a href="#pricing">Pricing</a>
             <Link href="/app" onClick={() => { if (typeof window !== 'undefined') localStorage.removeItem('admitflow_leads'); }}>Log In</Link>
@@ -213,6 +214,55 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* 5.5 Matchmaker Section */}
+      <section id="matchmaker" className="section" style={{ backgroundColor: 'var(--color-surface-card)', borderTop: '1px solid var(--color-border)' }}>
+        <div className="container">
+          <div className="grid-2" style={{ alignItems: 'center' }}>
+            <div className="glass-panel" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'var(--color-brand)', color: 'white' }}>
+              <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.1)', borderRadius: '1rem' }}>
+                <h4 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Users size={20} /> Deep Psychographic Matching
+                </h4>
+                <p style={{ opacity: 0.9 }}>
+                  &quot;Patient needs high structure and direct accountability.&quot;
+                </p>
+                <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '1rem', background: 'white', color: 'var(--color-text)', padding: '1rem', borderRadius: '0.5rem' }}>
+                  <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', background: 'var(--color-surface-card)', border: '2px solid var(--color-sla-fresh)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <span style={{ fontWeight: 'bold', color: 'var(--color-sla-fresh)' }}>95%</span>
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 'bold' }}>Dr. Sarah Jenkins</div>
+                    <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>Lead Therapist • Direct • Highly Structured</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p className="section-eyebrow" style={{ color: 'var(--color-brand)' }}>INTRODUCING ADMITFLOW MATCHMAKER</p>
+              <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', fontWeight: 800, marginBottom: '1.5rem', lineHeight: 1.1 }}>Stop guessing. Start pairing patients for lasting recovery.</h2>
+              <p style={{ fontSize: '1.125rem', color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
+                Premature discharges (AMA) happen when a patient&apos;s personality clashes with the clinical environment. AdmitFlow Matchmaker uses HIPAA-compliant behavioral psychographics to recommend the exact therapist or housing environment where the patient will thrive.
+              </p>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem', color: 'var(--color-text)', fontWeight: 500 }}>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <CheckCircle2 size={20} style={{ color: 'var(--color-brand)', marginTop: '2px' }} />
+                  <span><strong>Zero Clinical Risk:</strong> We map communication preferences and structure needs—not symptoms or diagnoses.</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <CheckCircle2 size={20} style={{ color: 'var(--color-brand)', marginTop: '2px' }} />
+                  <span><strong>Higher Conversion:</strong> Give families confidence by showing exactly *why* your facility is the perfect fit.</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <CheckCircle2 size={20} style={{ color: 'var(--color-brand)', marginTop: '2px' }} />
+                  <span><strong>Premium Tier Upgrades:</strong> Unlock deep personnel matching to pair patients directly to the therapist that matches their behavioral profile.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
 
       {/* 6. Why AdmitFlow OS — Value Proposition Section */}
       <section id="why" className="section">

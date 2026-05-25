@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { useLeads } from '@/lib/store';
-import { User, UserRole, LeadStatus } from '@/lib/types';
+import { User, UserRole, LeadStatus, Therapist } from '@/lib/types';
 import Link from 'next/link';
-import { ArrowLeft, Edit, UserPlus, Trash2, ShieldOff, ShieldAlert, ArrowRightLeft } from 'lucide-react';
+import { ArrowLeft, Edit, UserPlus, Trash2, ShieldOff, ShieldAlert, ArrowRightLeft, Sparkles, Lock, X, Plus } from 'lucide-react';
 
 export default function AdminSettings() {
-  const { leads, users, currentUser, updateLead, addUser, updateUser, deleteUser, generateLeadId } = useLeads();
+  const { leads, users, clients, currentUser, updateLead, addUser, updateUser, deleteUser, updateClient } = useLeads();
 
   const [showReassignModal, setShowReassignModal] = useState(false);
   const [showSlaModal, setShowSlaModal] = useState(false);
@@ -30,6 +30,13 @@ export default function AdminSettings() {
   // State for reassign leads
   const [reassignFrom, setReassignFrom] = useState('');
   const [reassignTo, setReassignTo] = useState('');
+
+  // Matchmaker Configuration State
+  const clientConfig = clients.find(c => c.id === currentUser?.locationId);
+  const [newTherapist, setNewTherapist] = useState<Partial<Therapist>>({ psychographics: [], certifications: [] });
+  const [showTherapistModal, setShowTherapistModal] = useState(false);
+  const [newService, setNewService] = useState('');
+  const [newSpecialty, setNewSpecialty] = useState('');
 
   const handleUserSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +70,68 @@ export default function AdminSettings() {
     setReassignFrom('');
     setReassignTo('');
     alert('Leads successfully reassigned!');
+  };
+
+  const handleAddTherapist = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clientConfig || !newTherapist.name || !newTherapist.role) return;
+
+    const therapist: Therapist = {
+      id: 't_' + Math.random().toString(36).substr(2, 9),
+      name: newTherapist.name,
+      role: newTherapist.role,
+      certifications: newTherapist.certifications || [],
+      psychographics: newTherapist.psychographics || []
+    };
+
+    updateClient(clientConfig.id, {
+      personnel: [...clientConfig.personnel, therapist]
+    });
+    setShowTherapistModal(false);
+    setNewTherapist({ psychographics: [], certifications: [] });
+  };
+
+  const handleDeleteTherapist = (id: string) => {
+    if (!clientConfig) return;
+    if (confirm('Remove this personnel member?')) {
+      updateClient(clientConfig.id, {
+        personnel: clientConfig.personnel.filter(t => t.id !== id)
+      });
+    }
+  };
+
+  const handleWeightChange = (field: 'servicesWeight' | 'specialtiesWeight' | 'personnelWeight', value: number) => {
+    if (!clientConfig) return;
+    updateClient(clientConfig.id, {
+      matchmakerConfig: {
+        ...clientConfig.matchmakerConfig,
+        [field]: value
+      }
+    });
+  };
+
+  const handleAddService = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clientConfig || !newService.trim()) return;
+    updateClient(clientConfig.id, { services: [...clientConfig.services, newService.trim()] });
+    setNewService('');
+  };
+
+  const handleRemoveService = (service: string) => {
+    if (!clientConfig) return;
+    updateClient(clientConfig.id, { services: clientConfig.services.filter(s => s !== service) });
+  };
+
+  const handleAddSpecialty = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clientConfig || !newSpecialty.trim()) return;
+    updateClient(clientConfig.id, { specialties: [...clientConfig.specialties, newSpecialty.trim()] });
+    setNewSpecialty('');
+  };
+
+  const handleRemoveSpecialty = (specialty: string) => {
+    if (!clientConfig) return;
+    updateClient(clientConfig.id, { specialties: clientConfig.specialties.filter(s => s !== specialty) });
   };
 
   return (
@@ -161,6 +230,126 @@ export default function AdminSettings() {
             </div>
           </section>
 
+          {/* Matchmaker Config */}
+          {clientConfig && (
+            <section className="glass-panel p-6 border border-[var(--color-brand)]">
+              <div className="mb-4 border-b border-[var(--color-border)] pb-4 flex justify-between items-start">
+                <div>
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-[var(--color-brand)]">
+                    <Sparkles size={20} /> Matchmaker Configuration
+                  </h2>
+                  <p className="text-sm text-muted">Configure your local matching weights and personnel.</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-6">
+                {/* Local Weighting Levers */}
+                <div className="relative">
+                  <h3 className="font-semibold text-sm mb-3">Matching Weights (Levers)</h3>
+                  
+                  {!clientConfig.premiumMatchmakingEnabled && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[var(--color-surface)]/60 backdrop-blur-[2px] rounded-lg border border-[var(--color-border)]">
+                      <Lock size={20} className="text-muted mb-1" />
+                      <p className="text-xs font-bold uppercase tracking-wider">Premium Feature</p>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col gap-4 opacity-100">
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Services Fit</span>
+                        <span className="font-bold">{clientConfig.matchmakerConfig.servicesWeight}%</span>
+                      </div>
+                      <input type="range" min="0" max="100" className="w-full calc-slider" value={clientConfig.matchmakerConfig.servicesWeight} onChange={(e) => handleWeightChange('servicesWeight', parseInt(e.target.value))} disabled={!clientConfig.premiumMatchmakingEnabled} />
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Specialties Fit</span>
+                        <span className="font-bold">{clientConfig.matchmakerConfig.specialtiesWeight}%</span>
+                      </div>
+                      <input type="range" min="0" max="100" className="w-full calc-slider" value={clientConfig.matchmakerConfig.specialtiesWeight} onChange={(e) => handleWeightChange('specialtiesWeight', parseInt(e.target.value))} disabled={!clientConfig.premiumMatchmakingEnabled} />
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span className="text-[var(--color-brand)] font-medium">Personnel Psychographics</span>
+                        <span className="font-bold">{clientConfig.matchmakerConfig.personnelWeight}%</span>
+                      </div>
+                      <input type="range" min="0" max="100" className="w-full calc-slider" value={clientConfig.matchmakerConfig.personnelWeight} onChange={(e) => handleWeightChange('personnelWeight', parseInt(e.target.value))} disabled={!clientConfig.premiumMatchmakingEnabled} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-[var(--color-border)] pt-4">
+                  {/* Services Management */}
+                  <div>
+                    <h3 className="font-semibold text-sm mb-3">Facility Services</h3>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {clientConfig.services.map(s => (
+                        <span key={s} className="badge bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center gap-1">
+                          {s} <X size={12} className="cursor-pointer text-muted hover:text-[var(--color-sla-breached)]" onClick={() => handleRemoveService(s)} />
+                        </span>
+                      ))}
+                    </div>
+                    <form onSubmit={handleAddService} className="flex gap-2">
+                      <input type="text" className="input flex-1 input-sm" placeholder="e.g. Detox, IOP" value={newService} onChange={e => setNewService(e.target.value)} />
+                      <button type="submit" className="btn btn-ghost btn-sm">Add</button>
+                    </form>
+                  </div>
+
+                  {/* Specialties Management */}
+                  <div>
+                    <h3 className="font-semibold text-sm mb-3">Clinical Specialties</h3>
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {clientConfig.specialties.map(s => (
+                        <span key={s} className="badge bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center gap-1">
+                          {s} <X size={12} className="cursor-pointer text-muted hover:text-[var(--color-sla-breached)]" onClick={() => handleRemoveSpecialty(s)} />
+                        </span>
+                      ))}
+                    </div>
+                    <form onSubmit={handleAddSpecialty} className="flex gap-2">
+                      <input type="text" className="input flex-1 input-sm" placeholder="e.g. Dual Diagnosis" value={newSpecialty} onChange={e => setNewSpecialty(e.target.value)} />
+                      <button type="submit" className="btn btn-ghost btn-sm">Add</button>
+                    </form>
+                  </div>
+                </div>
+
+                {/* Personnel Management */}
+                <div className="relative border-t border-[var(--color-border)] pt-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="font-semibold text-sm">Personnel (Therapists)</h3>
+                    <button className="btn btn-ghost btn-sm text-[var(--color-brand)]" disabled={!clientConfig.premiumMatchmakingEnabled} onClick={() => setShowTherapistModal(true)}>
+                      <Plus size={16} /> Add
+                    </button>
+                  </div>
+
+                  {!clientConfig.premiumMatchmakingEnabled && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[var(--color-surface)]/60 backdrop-blur-[2px] rounded-lg mt-8 border border-[var(--color-border)]">
+                      <Lock size={20} className="text-muted mb-1" />
+                      <p className="text-xs font-bold uppercase tracking-wider">Premium Feature</p>
+                    </div>
+                  )}
+
+                  <div className="flex flex-col gap-2">
+                    {clientConfig.personnel.map(t => (
+                      <div key={t.id} className="flex justify-between items-center p-3 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)]">
+                        <div>
+                          <p className="font-semibold text-sm">{t.name}</p>
+                          <p className="text-xs text-muted">{t.role} • {t.psychographics.join(', ')}</p>
+                        </div>
+                        <button className="btn btn-ghost btn-sm text-red-500" onClick={() => handleDeleteTherapist(t.id)}>
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+                    {clientConfig.personnel.length === 0 && (
+                      <p className="text-sm text-muted italic">No personnel added yet.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
         </div>
       </div>
 
@@ -244,6 +433,51 @@ export default function AdminSettings() {
               <div className="flex gap-3 justify-end mt-4">
                 <button type="button" className="btn btn-ghost" onClick={() => setShowSlaModal(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary">Save SLAs</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Therapist Modal */}
+      {showTherapistModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4">
+          <div className="glass-panel w-full max-w-md p-6">
+            <h2 className="text-2xl font-bold mb-6">Add Personnel</h2>
+            <form onSubmit={handleAddTherapist} className="flex flex-col gap-4">
+              <div>
+                <label className="block text-sm font-medium text-muted mb-1">Full Name *</label>
+                <input required type="text" className="input w-full" value={newTherapist.name || ''} onChange={e => setNewTherapist({...newTherapist, name: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-muted mb-1">Role *</label>
+                <input required type="text" className="input w-full" placeholder="e.g. Lead Therapist" value={newTherapist.role || ''} onChange={e => setNewTherapist({...newTherapist, role: e.target.value})} />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-muted mb-1">Psychographics (Select all that apply)</label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {['direct', 'gentle', 'analytical', 'highly_structured', 'flexible', 'group_oriented', 'one_on_one'].map(trait => (
+                    <label key={trait} className="flex items-center gap-2 text-sm">
+                      <input 
+                        type="checkbox" 
+                        checked={newTherapist.psychographics?.includes(trait) || false}
+                        onChange={(e) => {
+                          const current = newTherapist.psychographics || [];
+                          if (e.target.checked) {
+                            setNewTherapist({...newTherapist, psychographics: [...current, trait]});
+                          } else {
+                            setNewTherapist({...newTherapist, psychographics: current.filter(t => t !== trait)});
+                          }
+                        }}
+                      />
+                      <span className="capitalize">{trait.replace('_', ' ')}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="flex gap-3 justify-end mt-4">
+                <button type="button" className="btn btn-ghost" onClick={() => setShowTherapistModal(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary">Save Personnel</button>
               </div>
             </form>
           </div>

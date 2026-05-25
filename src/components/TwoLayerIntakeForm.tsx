@@ -42,7 +42,11 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
 
   const [immediateSafetyConcern, setImmediateSafetyConcern] = useState(false);
   const [logisticalNotes, setLogisticalNotes] = useState('');
-
+  
+  // Psychographics (HIPAA-compliant behavioral traits)
+  const [communicationPreference, setCommunicationPreference] = useState<'direct' | 'gentle' | 'analytical' | ''>('');
+  const [structurePreference, setStructurePreference] = useState<'highly_structured' | 'flexible' | 'moderate' | ''>('');
+  const [groupComfort, setGroupComfort] = useState<'high' | 'medium' | 'low' | ''>('');
 
   const handleNotesBlur = () => {
     const check = containsPHI(logisticalNotes);
@@ -111,6 +115,11 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
         employmentOrSchoolObligations: null,
         activeLegalRequirements: null,
         socialSupport: null,
+        
+        communicationPreference: (communicationPreference as any) || null,
+        structurePreference: (structurePreference as any) || null,
+        groupComfort: (groupComfort as any) || null,
+
         urgencyLevel: (urgency as UrgencyLevel) || null,
         recentSubstanceUse: null,
         medicalSafetyConcern: null,
@@ -355,6 +364,41 @@ export function TwoLayerIntakeForm({ onClose }: { onClose: () => void }) {
                   </div>
                 </div>
               )}
+
+              {/* Psychographics for Matchmaker */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border border-[var(--color-border)] rounded-md bg-[var(--color-surface-glass)]">
+                <div className="col-span-1 md:col-span-3 mb-2">
+                  <h4 className="font-semibold text-sm">Patient Psychographics (Matchmaker)</h4>
+                  <p className="text-xs text-muted">Identify behavioral preferences to recommend the right therapist/environment. No clinical data.</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Communication</label>
+                  <select className="select" value={communicationPreference} onChange={e => setCommunicationPreference(e.target.value as any)}>
+                    <option value="">Select...</option>
+                    <option value="direct">Direct & Accountability-driven</option>
+                    <option value="gentle">Gentle & Nurturing</option>
+                    <option value="analytical">Analytical & Fact-based</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Structure Needs</label>
+                  <select className="select" value={structurePreference} onChange={e => setStructurePreference(e.target.value as any)}>
+                    <option value="">Select...</option>
+                    <option value="highly_structured">Highly Structured</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="flexible">Flexible / Autonomous</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-1 block">Group Comfort</label>
+                  <select className="select" value={groupComfort} onChange={e => setGroupComfort(e.target.value as any)}>
+                    <option value="">Select...</option>
+                    <option value="high">High (Thrives in groups)</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low (Needs 1-on-1 focus)</option>
+                  </select>
+                </div>
+              </div>
 
               {/* Notes with PHI Guard */}
               <div>

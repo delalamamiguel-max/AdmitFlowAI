@@ -7,9 +7,49 @@ export interface User {
   id: string;
   email: string;
   role: UserRole;
-  locationId?: string;
+  locationId?: string; // Links to Client.id
   name: string;
   status?: 'active' | 'disabled';
+}
+
+// --- Matchmaker & Client Configuration ---
+
+export interface Therapist {
+  id: string;
+  name: string;
+  role: string;
+  certifications: string[];
+  psychographics: string[];
+}
+
+export interface MatchmakerConfig {
+  servicesWeight: number;       // e.g. 40
+  specialtiesWeight: number;    // e.g. 30
+  personnelWeight: number;      // e.g. 30 (requires premium)
+}
+
+export interface Client {
+  id: string;
+  name: string;
+  email: string;
+  accessEmails: string;
+  status: 'active' | 'paused' | 'archived';
+  users: number;
+  mrr: number;
+  premiumMatchmakingEnabled: boolean;
+  
+  // Matchmaker Data
+  services: string[];
+  specialties: string[];
+  personnel: Therapist[];
+  matchmakerConfig: MatchmakerConfig;
+}
+
+// Global Architectural Settings (Super Admin)
+export interface GlobalMatchmakerSettings {
+  baseServicesWeight: number;
+  baseSpecialtiesWeight: number;
+  basePersonnelWeight: number;
 }
 
 
@@ -89,7 +129,7 @@ export interface Lead {
   transportationConcern: boolean | null;
   treatmentOrHousing: TreatmentOrHousing | null;
 
-  // 4. Fit Screening
+  // 4. Fit Screening & Psychographics
   ageBand: AgeBand | null;
   genderIdentity: string | null;
   safePlaceToTalk: boolean | null;
@@ -97,6 +137,12 @@ export interface Lead {
   employmentOrSchoolObligations: boolean | null;
   activeLegalRequirements: YesNoUnknown | null;
   socialSupport: SocialSupport | null;
+  
+  // Patient Psychographics (HIPAA-compliant, behavioral/preference traits)
+  communicationPreference: 'direct' | 'gentle' | 'analytical' | null;
+  structurePreference: 'highly_structured' | 'flexible' | 'moderate' | null;
+  groupComfort: 'high' | 'medium' | 'low' | null;
+
 
   // 5. Urgency and Routing
   urgencyLevel: UrgencyLevel | null;

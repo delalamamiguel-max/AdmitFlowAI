@@ -5,6 +5,7 @@ import { Lead, CallOutcome, LeadTask } from '@/lib/types';
 import { useLeads } from '@/lib/store';
 import { decryptData } from '@/lib/crypto';
 import { SLATimer } from './SLATimer';
+import { MatchmakerPanel } from './MatchmakerPanel';
 import { containsPHI, PHI_WARNING_MESSAGE } from '@/lib/phi-guard';
 import { AlertTriangle, X, Trash2, Plus } from 'lucide-react';
 
@@ -128,6 +129,8 @@ export function LeadModal({ leadId, onClose }: { leadId: string, onClose: () => 
             </button>
           </div>
         </div>
+
+        <MatchmakerPanel lead={lead} />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-md mb-6 p-4 bg-[var(--color-surface-glass)] border border-[var(--color-border)] rounded-md">
           <div>
