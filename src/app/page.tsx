@@ -250,12 +250,12 @@ export default function LandingPage() {
               <p className="section-eyebrow" style={{ color: 'var(--color-brand)' }}>INTRODUCING ADMITFLOW MATCHMAKER</p>
               <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.5rem)', fontWeight: 800, marginBottom: '1.5rem', lineHeight: 1.1 }}>Stop guessing. Start pairing patients for lasting recovery.</h2>
               <p style={{ fontSize: '1.125rem', color: 'var(--color-text-secondary)', marginBottom: '1.5rem' }}>
-                Premature discharges (AMA) happen when a patient&apos;s personality clashes with the clinical environment. AdmitFlow Matchmaker uses HIPAA-compliant behavioral psychographics to recommend the exact therapist or housing environment where the patient will thrive.
+                Premature discharges (AMA) happen when a patient&apos;s personality clashes with the clinical environment. AdmitFlow Matchmaker uses purely operational, logistical psychographics to recommend the exact therapist or housing environment where the patient will thrive—keeping your intake pipeline lightweight and completely free of heavy clinical or HIPAA requirements.
               </p>
               <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem', color: 'var(--color-text)', fontWeight: 500 }}>
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                   <CheckCircle2 size={20} style={{ color: 'var(--color-brand)', marginTop: '2px' }} />
-                  <span><strong>Zero Clinical Risk:</strong> We map communication preferences and structure needs—not symptoms or diagnoses.</span>
+                  <span><strong>Zero Clinical Data:</strong> We map communication preferences and structure needs—not symptoms or diagnoses.</span>
                 </li>
                 <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
                   <CheckCircle2 size={20} style={{ color: 'var(--color-brand)', marginTop: '2px' }} />
