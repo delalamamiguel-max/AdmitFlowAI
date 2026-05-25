@@ -25,6 +25,8 @@ interface LeadContextType {
   unlock: (key: CryptoKey, user: User) => void;
   lock: () => void;
   generateLeadId: () => string;
+  addClient: (client: Client) => void;
+  addTherapist: (clientId: string, therapist: Therapist) => void;
 }
 
 const LeadContext = createContext<LeadContextType | undefined>(undefined);
@@ -34,9 +36,11 @@ export function LeadProvider({ children }: { children: ReactNode }) {
   const [users, setUsers] = useState<User[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [globalSettings, setGlobalSettings] = useState<GlobalMatchmakerSettings>({
-    baseServicesWeight: 50,
-    baseSpecialtiesWeight: 30,
-    basePersonnelWeight: 20
+    matchmakerConfig: {
+      servicesWeight: 50,
+      specialtiesWeight: 30,
+      personnelWeight: 20
+    }
   });
   
   const [isUnlocked, setIsUnlocked] = useState(false);
@@ -53,7 +57,7 @@ export function LeadProvider({ children }: { children: ReactNode }) {
         console.error('Failed to parse clients', e);
       }
     } else {
-      const defaultClients: Client[] = [
+            const defaultClients: Client[] = [
         { 
           id: 'client_1', 
           name: 'Serenity Rehab Center', 
@@ -64,7 +68,7 @@ export function LeadProvider({ children }: { children: ReactNode }) {
           mrr: 2400,
           premiumMatchmakingEnabled: true,
           services: ['detox', 'residential', 'php', 'iop'],
-          specialties: ['dual_diagnosis', 'trauma', 'substance_abuse'],
+          specialties: ['dual_diagnosis', 'trauma', 'substance_abuse', 'executive_burnout'],
           matchmakerConfig: { servicesWeight: 40, specialtiesWeight: 30, personnelWeight: 30 },
           personnel: [
             { id: 't1', name: 'Dr. Sarah Jenkins', role: 'Lead Therapist', certifications: ['LCSW', 'EMDR'], psychographics: ['direct', 'analytical', 'highly_structured'] },
@@ -83,7 +87,26 @@ export function LeadProvider({ children }: { children: ReactNode }) {
           services: ['sober_living', 'iop', 'op'],
           specialties: ['substance_abuse', 'mens_only'],
           matchmakerConfig: { servicesWeight: 70, specialtiesWeight: 30, personnelWeight: 0 },
-          personnel: []
+          personnel: [
+             { id: 't3', name: 'James Doe', role: 'House Manager', certifications: ['Peer Support'], psychographics: ['firm', 'community_focused'] }
+          ]
+        },
+        { 
+          id: 'client_3', 
+          name: 'Pinnacle Recovery', 
+          email: 'admissions@pinnaclerecovery.com', 
+          accessEmails: '', 
+          status: 'active', 
+          users: 8, 
+          mrr: 1500,
+          premiumMatchmakingEnabled: true,
+          services: ['residential', 'php'],
+          specialties: ['eating_disorders', 'trauma', 'womens_only'],
+          matchmakerConfig: { servicesWeight: 50, specialtiesWeight: 40, personnelWeight: 10 },
+          personnel: [
+             { id: 't4', name: 'Emily Clark', role: 'Clinical Director', certifications: ['PhD', 'LPC'], psychographics: ['nurturing', 'creative', 'flexible'] },
+             { id: 't5', name: 'Dr. John Smith', role: 'Psychiatrist', certifications: ['MD'], psychographics: ['analytical', 'direct', 'medical_focused'] }
+          ]
         }
       ];
       setClients(defaultClients);
@@ -228,6 +251,16 @@ export function LeadProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('admitflow_clients', JSON.stringify(newClients));
   };
 
+  const addClient = (client: Client) => {
+    setClients(prev => [...prev, client]);
+  };
+
+  const addTherapist = (clientId: string, therapist: Therapist) => {
+    setClients(prev => prev.map(c => 
+      c.id === clientId ? { ...c, personnel: [...c.personnel, therapist] } : c
+    ));
+  };
+
   const updateClient = (clientId: string, updates: Partial<Client>) => {
     saveClients(clients.map(c => c.id === clientId ? { ...c, ...updates } : c));
   };
@@ -309,7 +342,7 @@ export function LeadProvider({ children }: { children: ReactNode }) {
 
   return (
     <LeadContext.Provider value={{
-      leads, users, clients, globalSettings, isUnlocked, cryptoKey, currentUser, addLead, updateLead, moveLead, deleteLead, addUser, updateUser, deleteUser, updateClient, updateGlobalSettings, unlock, lock, generateLeadId, generateMockData
+      leads, users, clients, globalSettings, isUnlocked, cryptoKey, currentUser, addLead, updateLead, moveLead, deleteLead, addUser, updateUser, deleteUser, updateClient, addClient, addTherapist, updateGlobalSettings, unlock, lock, generateLeadId, generateMockData
     }}>
       {children}
     </LeadContext.Provider>

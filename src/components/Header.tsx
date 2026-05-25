@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLeads } from '@/lib/store';
-import { LogOut, Bell, BellOff, LayoutDashboard, Inbox, BarChart2, Settings } from 'lucide-react';
+import { LogOut, Bell, BellOff, LayoutDashboard, Inbox, BarChart2, Settings, Target } from 'lucide-react';
 import Link from 'next/link';
 
 export function Header() {
@@ -31,8 +31,8 @@ export function Header() {
   const handleSignOut = () => {
     lock();
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('admitflow_leads');
-      window.location.href = '/';
+      // localStorage.removeItem('admitflow_leads'); // Removing this so test data persists across user switching
+      window.location.href = '/app';
     }
   };
 
@@ -45,11 +45,11 @@ export function Header() {
   return (
     <header className="glass-panel flex justify-between items-center" style={{ height: '64px', padding: '0 1.5rem', borderRadius: 0, borderTop: 'none', borderLeft: 'none', borderRight: 'none', position: 'sticky', top: 0, zIndex: 40 }}>
       <div className="flex items-center gap-md">
-        <a href="/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+        <Link href="/" style={{ textDecoration: 'none' }}>
           <h1 className="font-bold" style={{ margin: 0, fontSize: '1.25rem', background: 'var(--color-brand)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             AdmitFlowAI
           </h1>
-        </a>
+        </Link>
         <span className="text-muted text-sm hidden sm:inline">{getRoleSubtitle()}</span>
       </div>
       
@@ -60,14 +60,24 @@ export function Header() {
           </Link>
         )}
         {currentUser?.role !== 'SUPER_ADMIN' && (
-          <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <Inbox size={16} /> Intake
-          </Link>
+          <>
+            <Link href="/app" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Inbox size={16} /> Intake
+            </Link>
+            {currentUser?.role === 'REP' && (
+              <Link href="/app/matchmaker" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                <Target size={16} /> Matchmaker
+              </Link>
+            )}
+          </>
         )}
         {currentUser?.role === 'ADMIN' && (
           <>
             <Link href="/app/reports" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
               <BarChart2 size={16} /> Team Reports
+            </Link>
+            <Link href="/app/admin/matchmaker" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <Target size={16} /> Matchmaker
             </Link>
             <Link href="/app/admin/settings" style={{ textDecoration: 'none', color: 'var(--color-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
               <Settings size={16} /> Admin Settings
@@ -75,7 +85,10 @@ export function Header() {
           </>
         )}
         {currentUser?.role === 'SUPER_ADMIN' && (
-          <Link href="/app/super-admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Super Admin</Link>
+          <>
+            <Link href="/app/super-admin" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Dashboard</Link>
+            <Link href="/app/super-admin/matchmaker" style={{ textDecoration: 'none', color: 'var(--color-text)' }}>Matchmaker DB</Link>
+          </>
         )}
       </nav>
 

@@ -55,11 +55,10 @@ export default function LandingPage() {
           </button>
 
           <nav className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`}>
-            <a href="#why" onClick={() => setIsMobileMenuOpen(false)}>Why</a>
+            <a href="#why" onClick={() => setIsMobileMenuOpen(false)}>Why AdmitFlow</a>
             <a href="#matchmaker" onClick={() => setIsMobileMenuOpen(false)}>Matchmaker</a>
-            <a href="#calculator" onClick={() => setIsMobileMenuOpen(false)}>ROI</a>
             <a href="#pricing" onClick={() => setIsMobileMenuOpen(false)}>Pricing</a>
-            <Link href="/app" onClick={() => { if (typeof window !== 'undefined') localStorage.removeItem('admitflow_leads'); setIsMobileMenuOpen(false); }}>Log In</Link>
+            <Link href="/app" onClick={() => { setIsMobileMenuOpen(false); }}>Log In</Link>
             <Link href="/app" className="btn btn-primary btn-sm" onClick={() => setIsMobileMenuOpen(false)}>Start Intake</Link>
           </nav>
         </div>

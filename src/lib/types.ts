@@ -47,9 +47,7 @@ export interface Client {
 
 // Global Architectural Settings (Super Admin)
 export interface GlobalMatchmakerSettings {
-  baseServicesWeight: number;
-  baseSpecialtiesWeight: number;
-  basePersonnelWeight: number;
+  matchmakerConfig: MatchmakerConfig;
 }
 
 

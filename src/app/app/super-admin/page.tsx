@@ -133,38 +133,7 @@ export default function SuperAdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {/* ... Global Settings ... */}
-        <div className="glass-panel p-6 md:col-span-3 border border-[var(--color-brand)]">
-          <div className="flex items-center gap-2 mb-4 border-b border-[var(--color-border)] pb-4">
-            <Settings2 className="text-[var(--color-brand)]" size={24} />
-            <div>
-              <h2 className="text-xl font-bold text-[var(--color-brand)]">Architectural Mapping (Global Matchmaker)</h2>
-              <p className="text-sm text-muted">Set the default algorithm weights across all tenants. Local admins can override these if they have Premium.</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span>Base Services Fit</span>
-                <span className="font-bold">{globalSettings.baseServicesWeight}%</span>
-              </div>
-              <input type="range" min="0" max="100" className="w-full calc-slider" value={globalSettings.baseServicesWeight} onChange={(e) => updateGlobalSettings({ baseServicesWeight: parseInt(e.target.value) })} />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-1">
-                <span>Base Specialties Fit</span>
-                <span className="font-bold">{globalSettings.baseSpecialtiesWeight}%</span>
-              </div>
-              <input type="range" min="0" max="100" className="w-full calc-slider" value={globalSettings.baseSpecialtiesWeight} onChange={(e) => updateGlobalSettings({ baseSpecialtiesWeight: parseInt(e.target.value) })} />
-            </div>
-            <div>
-              <div className="flex justify-between text-sm mb-1 text-[var(--color-brand)] font-medium">
-                <span>Base Personnel Psychographics</span>
-                <span className="font-bold">{globalSettings.basePersonnelWeight}%</span>
-              </div>
-              <input type="range" min="0" max="100" className="w-full calc-slider" value={globalSettings.basePersonnelWeight} onChange={(e) => updateGlobalSettings({ basePersonnelWeight: parseInt(e.target.value) })} />
-            </div>
-          </div>
-        </div>
+
       </div>
 
       <div className="glass-panel p-6 mb-8">

@@ -15,12 +15,12 @@ export function MatchmakerPanel({ lead }: { lead: Lead }) {
     if (!client) return { generalScore: 0, therapistMatches: [] };
 
     const config = client.matchmakerConfig;
-    const { baseServicesWeight, baseSpecialtiesWeight, basePersonnelWeight } = globalSettings;
+    const globalConfig = globalSettings.matchmakerConfig;
 
     // Use local client weights if set, otherwise fallback to global
-    const wServices = config.servicesWeight || baseServicesWeight;
-    const wSpecialties = config.specialtiesWeight || baseSpecialtiesWeight;
-    const wPersonnel = config.personnelWeight || basePersonnelWeight;
+    const wServices = config?.servicesWeight ?? globalConfig.servicesWeight;
+    const wSpecialties = config?.specialtiesWeight ?? globalConfig.specialtiesWeight;
+    const wPersonnel = config?.personnelWeight ?? globalConfig.personnelWeight;
 
     // 1. General Match Score (Services + Specialties)
     let generalScore = 0;
