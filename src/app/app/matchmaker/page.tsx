@@ -104,8 +104,8 @@ export default function IntakeMatchmakerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
         {/* Input Panel */}
         <div className="lg:col-span-1">
-          <div className="card p-md bg-white border border-gray-200">
-            <h3 className="font-semibold text-lg mb-md flex items-center gap-xs"><Search size={18} /> Patient Needs</h3>
+          <div className="glass-panel p-md border border-[var(--color-brand)]">
+            <h3 className="font-semibold text-lg mb-md flex items-center gap-xs text-[var(--color-brand)]"><Search size={18} /> Patient Needs</h3>
             
             <div className="flex flex-col gap-md">
               <div>
@@ -123,10 +123,10 @@ export default function IntakeMatchmakerPage() {
                     }
                   }}
                 />
-                <div className="flex flex-wrap gap-1 mt-2">
+                <div className="flex flex-wrap gap-2 mt-3">
                   {patientNeeds.services.map(s => (
-                    <span key={s} className="badge bg-gray-100 text-gray-700 text-xs flex items-center gap-1">
-                      {s} <button onClick={() => setPatientNeeds({...patientNeeds, services: patientNeeds.services.filter(x => x !== s)})}>&times;</button>
+                    <span key={s} className="px-2 py-1 rounded-md bg-[var(--color-surface)] border border-[var(--color-border)] text-sm font-medium flex items-center gap-1 shadow-sm">
+                      {s} <button className="text-muted hover:text-[var(--color-brand)] transition-colors" onClick={() => setPatientNeeds({...patientNeeds, services: patientNeeds.services.filter(x => x !== s)})}>&times;</button>
                     </span>
                   ))}
                 </div>
@@ -147,10 +147,10 @@ export default function IntakeMatchmakerPage() {
                     }
                   }}
                 />
-                <div className="flex flex-wrap gap-1 mt-2">
+                <div className="flex flex-wrap gap-2 mt-3">
                   {patientNeeds.specialties.map(s => (
-                    <span key={s} className="badge bg-indigo-50 text-indigo-700 text-xs flex items-center gap-1 border border-indigo-100">
-                      {s} <button onClick={() => setPatientNeeds({...patientNeeds, specialties: patientNeeds.specialties.filter(x => x !== s)})}>&times;</button>
+                    <span key={s} className="px-2 py-1 rounded-md bg-[var(--color-brand)]/10 text-[var(--color-brand)] border border-[var(--color-brand)]/20 text-sm font-medium flex items-center gap-1 shadow-sm">
+                      {s} <button className="hover:opacity-70 transition-opacity" onClick={() => setPatientNeeds({...patientNeeds, specialties: patientNeeds.specialties.filter(x => x !== s)})}>&times;</button>
                     </span>
                   ))}
                 </div>
@@ -171,10 +171,10 @@ export default function IntakeMatchmakerPage() {
                     }
                   }}
                 />
-                <div className="flex flex-wrap gap-1 mt-2">
+                <div className="flex flex-wrap gap-2 mt-3">
                   {patientNeeds.psychographics.map(p => (
-                    <span key={p} className="badge bg-green-50 text-green-700 text-xs flex items-center gap-1 border border-green-100">
-                      {p} <button onClick={() => setPatientNeeds({...patientNeeds, psychographics: patientNeeds.psychographics.filter(x => x !== p)})}>&times;</button>
+                    <span key={p} className="px-2 py-1 rounded-md bg-[var(--color-sla-fresh)]/10 text-[var(--color-sla-fresh)] border border-[var(--color-sla-fresh)]/20 text-sm font-medium flex items-center gap-1 shadow-sm">
+                      {p} <button className="hover:opacity-70 transition-opacity" onClick={() => setPatientNeeds({...patientNeeds, psychographics: patientNeeds.psychographics.filter(x => x !== p)})}>&times;</button>
                     </span>
                   ))}
                 </div>
@@ -194,53 +194,62 @@ export default function IntakeMatchmakerPage() {
         {/* Results Panel */}
         <div className="lg:col-span-2">
           {matches === null ? (
-            <div className="h-full flex flex-col items-center justify-center text-muted border-2 border-dashed border-gray-200 rounded-lg p-xl bg-gray-50">
-              <Target size={48} className="text-gray-300 mb-sm" />
+            <div className="h-full flex flex-col items-center justify-center text-muted border-2 border-dashed border-[var(--color-border)] rounded-xl p-xl bg-[var(--color-surface-glass)] backdrop-blur-md">
+              <Target size={48} className="opacity-30 mb-sm" />
               <p>Input patient needs on the left to see matching facilities.</p>
             </div>
           ) : matches.length === 0 ? (
-            <div className="h-full flex flex-col items-center justify-center text-muted border-2 border-dashed border-gray-200 rounded-lg p-xl bg-gray-50">
+            <div className="h-full flex flex-col items-center justify-center text-muted border-2 border-dashed border-[var(--color-border)] rounded-xl p-xl bg-[var(--color-surface-glass)] backdrop-blur-md">
               <p>No facilities match the criteria.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-md">
-              <h3 className="font-semibold text-lg mb-xs">Matching Facilities ({matches.length})</h3>
+              <h3 className="font-semibold text-lg mb-xs text-[var(--color-text)]">Matching Facilities ({matches.length})</h3>
               
               {matches.map((match, idx) => (
-                <div key={match.client.id} className="card p-md border border-gray-200 flex flex-col gap-md relative overflow-hidden">
+                <div key={match.client.id} className="glass-panel p-md flex flex-col gap-md relative overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg">
                   {idx === 0 && (
-                    <div className="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
+                    <div className="absolute top-0 right-0 bg-[var(--color-sla-fresh)] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg shadow-sm">
                       BEST MATCH
                     </div>
                   )}
                   
                   <div className="flex justify-between items-start">
                     <div>
-                      <h4 className="font-bold text-lg flex items-center gap-xs"><Building2 size={18} className="text-gray-400" /> {match.client.name}</h4>
+                      <h4 className="font-bold text-lg flex items-center gap-xs"><Building2 size={18} className="text-[var(--color-brand)]" /> {match.client.name}</h4>
                       <div className="flex gap-2 mt-2">
-                        {match.client.services.map(s => <span key={s} className="text-[10px] uppercase tracking-wider text-gray-500">{s}</span>)}
+                        {match.client.services.map(s => <span key={s} className="text-[10px] uppercase tracking-wider text-muted font-medium bg-[var(--color-surface)] px-2 py-0.5 rounded border border-[var(--color-border)]">{s}</span>)}
                       </div>
                     </div>
                     <div className="flex flex-col items-end">
-                      <span className={`text-2xl font-bold ${match.score >= 80 ? 'text-green-600' : match.score >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+                      <span className={`text-2xl font-black ${match.score >= 80 ? 'text-[var(--color-sla-fresh)]' : match.score >= 50 ? 'text-[var(--color-sla-warning)]' : 'text-[var(--color-sla-breached)]'}`}>
                         {match.score}%
                       </span>
-                      <span className="text-xs text-muted uppercase">Match Score</span>
+                      <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Match Score</span>
                     </div>
                   </div>
 
                   {match.matchedTherapists.length > 0 && (
-                    <div className="mt-sm pt-sm border-t border-gray-100">
-                      <h5 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-sm">Personnel Matches</h5>
+                    <div className="mt-sm pt-sm border-t border-[var(--color-border)]">
+                      <h5 className="text-[10px] font-bold text-[var(--color-brand)] uppercase tracking-wider mb-sm">Personnel Matches</h5>
                       <div className="flex flex-col gap-sm">
                         {match.matchedTherapists.map(tMatch => (
-                          <div key={tMatch.therapist.id} className="flex justify-between items-center bg-gray-50 p-2 rounded">
-                            <div className="flex items-center gap-sm">
-                              <User size={16} className="text-gray-400" />
-                              <span className="font-medium text-sm">{tMatch.therapist.name}</span>
-                              <span className="text-xs text-muted">({tMatch.therapist.role})</span>
+                          <div key={tMatch.therapist.id} className="flex justify-between items-center bg-[var(--color-surface)] border border-[var(--color-border)] p-3 rounded-lg shadow-sm">
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-[var(--color-brand)]/10 flex items-center justify-center text-[var(--color-brand)]">
+                                <User size={14} />
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="font-bold text-sm leading-tight">{tMatch.therapist.name}</span>
+                                <span className="text-[10px] uppercase tracking-wider text-muted font-medium">{tMatch.therapist.role}</span>
+                              </div>
                             </div>
-                            <span className="text-xs font-bold text-green-600">{Math.round(tMatch.score)}% fit</span>
+                            <div className="flex items-center gap-2">
+                              <div className="h-1.5 w-16 bg-[var(--color-surface-glass)] rounded-full overflow-hidden">
+                                <div className="h-full bg-[var(--color-sla-fresh)] rounded-full" style={{ width: `${Math.round(tMatch.score)}%` }}></div>
+                              </div>
+                              <span className="text-xs font-bold text-[var(--color-sla-fresh)] w-10 text-right">{Math.round(tMatch.score)}%</span>
+                            </div>
                           </div>
                         ))}
                       </div>
